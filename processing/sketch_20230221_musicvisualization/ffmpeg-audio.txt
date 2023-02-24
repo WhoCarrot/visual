@@ -1,0 +1,56 @@
+ffmpeg version 2023-02-19-git-2aec86695a-full_build-www.gyan.dev Copyright (c) 2000-2023 the FFmpeg developers
+  built with gcc 12.2.0 (Rev10, Built by MSYS2 project)
+  configuration: --enable-gpl --enable-version3 --enable-static --disable-w32threads --disable-autodetect --enable-fontconfig --enable-iconv --enable-gnutls --enable-libxml2 --enable-gmp --enable-bzlib --enable-lzma --enable-libsnappy --enable-zlib --enable-librist --enable-libsrt --enable-libssh --enable-libzmq --enable-avisynth --enable-libbluray --enable-libcaca --enable-sdl2 --enable-libaribb24 --enable-libdav1d --enable-libdavs2 --enable-libuavs3d --enable-libzvbi --enable-librav1e --enable-libsvtav1 --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libaom --enable-libjxl --enable-libopenjpeg --enable-libvpx --enable-mediafoundation --enable-libass --enable-frei0r --enable-libfreetype --enable-libfribidi --enable-liblensfun --enable-libvidstab --enable-libvmaf --enable-libzimg --enable-amf --enable-cuda-llvm --enable-cuvid --enable-ffnvcodec --enable-nvdec --enable-nvenc --enable-d3d11va --enable-dxva2 --enable-libvpl --enable-libshaderc --enable-vulkan --enable-libplacebo --enable-opencl --enable-libcdio --enable-libgme --enable-libmodplug --enable-libopenmpt --enable-libopencore-amrwb --enable-libmp3lame --enable-libshine --enable-libtheora --enable-libtwolame --enable-libvo-amrwbenc --enable-libilbc --enable-libgsm --enable-libopencore-amrnb --enable-libopus --enable-libspeex --enable-libvorbis --enable-ladspa --enable-libbs2b --enable-libflite --enable-libmysofa --enable-librubberband --enable-libsoxr --enable-chromaprint
+  libavutil      58.  3.100 / 58.  3.100
+  libavcodec     60.  4.100 / 60.  4.100
+  libavformat    60.  4.100 / 60.  4.100
+  libavdevice    60.  2.100 / 60.  2.100
+  libavfilter     9.  4.100 /  9.  4.100
+  libswscale      7.  2.100 /  7.  2.100
+  libswresample   4. 11.100 /  4. 11.100
+  libpostproc    57.  2.100 / 57.  2.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'c:\dev\visual\processing\sketch_20230221_musicvisualization\../sketch_20230221_musicvisualization.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf60.4.100
+    comment         : Made with Video Export for Processing - https://git.io/vAXLk
+  Duration: 00:00:01.90, start: 0.000000, bitrate: 31938 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 2000x600, 31923 kb/s, 144 fps, 144 tbr, 18432 tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc60.4.100 libx264
+[mp3 @ 0000025f6d48eac0] Estimating duration from bitrate, this may be inaccurate
+Input #1, mp3, from 'c:\dev\visual\processing\sketch_20230221_musicvisualization\data\..\..\data\theme19.mp3':
+  Metadata:
+    major_brand     : dash
+    minor_version   : 0
+    compatible_brands: iso6mp41
+    encoder         : Lavf57.19.100
+  Duration: 00:03:20.67, start: 0.000000, bitrate: 192 kb/s
+  Stream #1:0: Audio: mp3, 44100 Hz, stereo, fltp, 192 kb/s
+Stream mapping:
+  Stream #1:0 (mp3float) -> apad:default
+  apad:default -> Stream #0:0 (aac)
+  Stream #0:0 -> #0:1 (copy)
+Press [q] to stop, [?] for help
+Output #0, mp4, to 'c:\dev\visual\processing\sketch_20230221_musicvisualization\temp-with-audio.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    comment         : Made with Video Export for Processing - https://git.io/vAXLk
+    encoder         : Lavf60.4.100
+  Stream #0:0: Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 128 kb/s
+    Metadata:
+      encoder         : Lavc60.4.100 aac
+  Stream #0:1(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 2000x600, q=2-31, 31923 kb/s, 144 fps, 144 tbr, 18432 tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc60.4.100 libx264
+frame=    0 fps=0.0 q=-1.0 size=       0kB time=-577014:32:22.77 bitrate=  -0.0kbits/s speed=N/A    frame=  273 fps=0.0 q=-1.0 Lsize=    7424kB time=00:00:01.97 bitrate=30813.4kbits/s speed=42.1x    
+video:7388kB audio:30kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.076867%
+[aac @ 0000025f6d4b50c0] Qavg: 3902.203
