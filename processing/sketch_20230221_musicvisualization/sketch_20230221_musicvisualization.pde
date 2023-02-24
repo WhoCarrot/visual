@@ -12,7 +12,7 @@ int cols = 16;
 int rows = 32;
 int multiplier = 2;
 int fftSize = 1024;
-String songname = "../../data/theme19.mp3";
+String songname = "../../data/theme4.mp3";
 float skip = -1;
 float angle = 0;
 float maxwidth = 64;
@@ -28,44 +28,48 @@ float backgroundChangePercentage = 50;
 float backgroundChangeMin = 0;
 float backgroundChangeMax = 100;
 float backgroundIntensityDecay = 2;
+float dropheightpercentage = 98.3;
 
 float lowHeightTicker = 0;
 float lowHeightTime = 60;
+
 
 void preload () {
 }
 
 void setup () {
-  size(2000, 600, P3D);
-  //fullScreen(P3D);
+  // size(1920, 1080, P3D);
+  fullScreen(P3D, 2);
   strokeJoin(ROUND);
   strokeCap(ROUND);
   colorMode(HSB, 360);
   smooth();
-  frameRate(1000);
+  frameRate(144);
   noStroke();
   
   minim = new Minim(this);
   setMaximumHeight(songname);
   jingle = minim.loadFile(songname, fftSize);
-  jingle.loop();
+  jingle.play();
   fft = new FFT( jingle.bufferSize(), jingle.sampleRate() );
 
   scl = width / cols;
   
   terrain = new float[cols][rows];
   
-  initRecording(songname);
+  // initRecording();
 }
 
 void draw () {
   // while (getCurrentTime() < getSoundTime() + frameDuration * frameOffset) {
+    // println(frameRate);
+
     
     
 
   background(backgroundHue, backgroundSaturation, backgroundBrightness);
-  noStroke();
   
+  stroke(255, 0, 0);
   float position;
   if (skip != -1) {
     position = skip;
@@ -75,6 +79,7 @@ void draw () {
     position = map(jingle.position(), 0, jingle.length(), 0, width);
   }
   line(position, height, position, height-25);
+  noStroke();
   
   fft.forward( jingle.right );
   
@@ -121,11 +126,12 @@ void draw () {
     lowHeightTicker = 0;
   }
   
-  if (heightpercentage > 70) {
+  if (heightpercentage > dropheightpercentage) {
     if (fill) {
       backgroundBrightness = 360;
       fill = false;
       println("nofill");
+      println(heightpercentage);
     }
   }
   
@@ -156,7 +162,7 @@ void draw () {
     backgroundBrightness -= map(backgroundBrightness, 0, 360, backgroundIntensityDecay, backgroundIntensityDecay*2);
   }
   
-  recordFrame();
+  // recordFrame();
   // }
 }
 
