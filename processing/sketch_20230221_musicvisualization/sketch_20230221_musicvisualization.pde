@@ -28,7 +28,7 @@ float backgroundChangePercentage = 75;
 float backgroundChangeMin = 0;
 float backgroundChangeMax = 100;
 float backgroundIntensityDecay = 1;
-float dropheightpercentage = 98;
+float dropheightpercentage = 80;
 
 float lowHeightTicker = 0;
 float lowHeightTime = 60;
