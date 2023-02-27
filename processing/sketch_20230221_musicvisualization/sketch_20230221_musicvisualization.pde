@@ -12,7 +12,7 @@ int cols = 16;
 int rows = 32;
 int multiplier = 2;
 int fftSize = 1024;
-String songname = "../../data/theme4.mp3";
+String songname = "../../data/theme17.mp3";
 float skip = -1;
 float angle = 0;
 float maxwidth = 64;
@@ -24,29 +24,30 @@ float desiredcMod = 0.0;
 float backgroundHue = 0.0;
 float backgroundBrightness = 0.0;
 float backgroundSaturation = 0;
-float backgroundChangePercentage = 50;
+float backgroundChangePercentage = 75;
 float backgroundChangeMin = 0;
 float backgroundChangeMax = 100;
-float backgroundIntensityDecay = 2;
-float dropheightpercentage = 98.3;
+float backgroundIntensityDecay = 1;
+float dropheightpercentage = 98;
 
 float lowHeightTicker = 0;
 float lowHeightTime = 60;
 
 void setup () {
-  size(1280, 720, P3D);
+  minim = new Minim(this);
+  setMaximumHeight(songname);
+  jingle = minim.loadFile(songname, fftSize);
+  jingle.play();
+  fft = new FFT( jingle.bufferSize(), jingle.sampleRate() );
+
+  // size(1920, 1080, P3D);
+  fullScreen(P3D, 2);
   strokeJoin(ROUND);
   strokeCap(ROUND);
   colorMode(HSB, 360);
   smooth();
   frameRate(144);
   noStroke();
-  
-  minim = new Minim(this);
-  setMaximumHeight(songname);
-  jingle = minim.loadFile(songname, fftSize);
-  jingle.play();
-  fft = new FFT( jingle.bufferSize(), jingle.sampleRate() );
 
   scl = width / cols;
   
@@ -54,10 +55,11 @@ void setup () {
 }
 
 void draw () {
+  noStroke();
   setTitle();
 
   background(backgroundHue, backgroundSaturation, backgroundBrightness);
-  fft.forward(jingle.mix);
+  fft.forward(jingle.right);
 
   float maxfromband = 0;
   // Loop through the entire band
@@ -141,14 +143,16 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       float h = terrain[x][y];
       //float c = map(h, 0, maxheight, colorMin, colorMax);
       float c = map(h, 0, maxheight, 0, 360);
-      stroke(c, 360, 360);
       float sw = map(heightpercentage, 0, 100, -maxwidth/8, maxwidth)-pow(y,2);
       if (sw < 1) sw = 1;
       strokeWeight(sw);
       if (fill) {
-        fill(c, 360, 360);
+        float alphaValue = min(map(y, 0, rows, 360, 0) + map(heightpercentage, 0, 100, 0, 360), 360);
+        fill(color(c, 360, 360, alphaValue));
+        stroke(color(c, 360, 360, alphaValue));
       } else {
         // fill(c, 360, map(heightpercentage, 0, 100, 0, 360));
+        stroke(c, 360, 360);
         noFill();
       }
       float ySine = sin(map(x, 0, cols, 0, HALF_PI));
