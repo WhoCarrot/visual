@@ -32,6 +32,7 @@ float dropheightpercentage = 98;
 
 float lowHeightTicker = 0;
 float lowHeightTime = 60;
+float lowHeightThreshold = 10;
 
 void setup () {
   minim = new Minim(this);
@@ -93,7 +94,7 @@ void draw () {
   float yPow = 2;
   
   // Change color when nothing is happening
-  if (heightpercentage < 5) {
+  if (heightpercentage < lowHeightThreshold) {
     lowHeightTicker++;
     if (lowHeightTicker > lowHeightTime && !fill) {
       println("fill");
