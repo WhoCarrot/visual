@@ -1,49 +1,0 @@
-ffmpeg version 2023-02-19-git-2aec86695a-full_build-www.gyan.dev Copyright (c) 2000-2023 the FFmpeg developers
-  built with gcc 12.2.0 (Rev10, Built by MSYS2 project)
-  configuration: --enable-gpl --enable-version3 --enable-static --disable-w32threads --disable-autodetect --enable-fontconfig --enable-iconv --enable-gnutls --enable-libxml2 --enable-gmp --enable-bzlib --enable-lzma --enable-libsnappy --enable-zlib --enable-librist --enable-libsrt --enable-libssh --enable-libzmq --enable-avisynth --enable-libbluray --enable-libcaca --enable-sdl2 --enable-libaribb24 --enable-libdav1d --enable-libdavs2 --enable-libuavs3d --enable-libzvbi --enable-librav1e --enable-libsvtav1 --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libaom --enable-libjxl --enable-libopenjpeg --enable-libvpx --enable-mediafoundation --enable-libass --enable-frei0r --enable-libfreetype --enable-libfribidi --enable-liblensfun --enable-libvidstab --enable-libvmaf --enable-libzimg --enable-amf --enable-cuda-llvm --enable-cuvid --enable-ffnvcodec --enable-nvdec --enable-nvenc --enable-d3d11va --enable-dxva2 --enable-libvpl --enable-libshaderc --enable-vulkan --enable-libplacebo --enable-opencl --enable-libcdio --enable-libgme --enable-libmodplug --enable-libopenmpt --enable-libopencore-amrwb --enable-libmp3lame --enable-libshine --enable-libtheora --enable-libtwolame --enable-libvo-amrwbenc --enable-libilbc --enable-libgsm --enable-libopencore-amrnb --enable-libopus --enable-libspeex --enable-libvorbis --enable-ladspa --enable-libbs2b --enable-libflite --enable-libmysofa --enable-librubberband --enable-libsoxr --enable-chromaprint
-  libavutil      58.  3.100 / 58.  3.100
-  libavcodec     60.  4.100 / 60.  4.100
-  libavformat    60.  4.100 / 60.  4.100
-  libavdevice    60.  2.100 / 60.  2.100
-  libavfilter     9.  4.100 /  9.  4.100
-  libswscale      7.  2.100 /  7.  2.100
-  libswresample   4. 11.100 /  4. 11.100
-  libpostproc    57.  2.100 / 57.  2.100
-[rawvideo @ 0000022cc3b5e600] Stream #0: not enough frames to estimate rate; consider increasing probesize
-Input #0, rawvideo, from 'fd:':
-  Duration: N/A, start: 0.000000, bitrate: 4147200 kb/s
-  Stream #0:0: Video: rawvideo (RGB[24] / 0x18424752), rgb24, 2000x600, 4147200 kb/s, 144 tbr, 144 tbn
-Stream mapping:
-  Stream #0:0 -> #0:0 (rawvideo (native) -> h264 (libx264))
-[libx264 @ 0000022cc3b89f40] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
-[libx264 @ 0000022cc3b89f40] profile High, level 5.1, 4:2:0, 8-bit
-[libx264 @ 0000022cc3b89f40] 264 - core 164 r3106 eaa68fa - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=19 lookahead_threads=3 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=15.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
-Output #0, mp4, to 'c:\dev\visual\processing\sketch_20230221_musicvisualization\../sketch_20230221_musicvisualization.mp4':
-  Metadata:
-    comment         : Made with Video Export for Processing - https://git.io/vAXLk
-    encoder         : Lavf60.4.100
-  Stream #0:0: Video: h264 (avc1 / 0x31637661), yuv420p(tv, progressive), 2000x600, q=2-31, 144 fps, 18432 tbn
-    Metadata:
-      encoder         : Lavc60.4.100 libx264
-    Side data:
-      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
-frame=    0 fps=0.0 q=0.0 size=       0kB time=-577014:32:22.77 bitrate=  -0.0kbits/s speed=N/A    frame=    0 fps=0.0 q=0.0 size=       0kB time=-577014:32:22.77 bitrate=  -0.0kbits/s speed=N/A    frame=   33 fps= 32 q=25.0 size=       0kB time=00:00:00.21 bitrate=   1.8kbits/s speed=0.206x    frame=   79 fps= 51 q=25.0 size=    1280kB time=00:00:00.53 bitrate=19610.5kbits/s speed=0.345x    frame=  126 fps= 61 q=25.0 size=    2560kB time=00:00:00.86 bitrate=24354.5kbits/s speed=0.418x    frame=  172 fps= 67 q=25.0 size=    4096kB time=00:00:01.18 bitrate=28422.9kbits/s speed=0.46x    frame=  273 fps= 83 q=-1.0 Lsize=    7391kB time=00:00:01.87 bitrate=32293.6kbits/s speed=0.573x    
-video:7388kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.049319%
-[libx264 @ 0000022cc3b89f40] frame I:4     Avg QP: 7.54  size: 40582
-[libx264 @ 0000022cc3b89f40] frame P:169   Avg QP:15.43  size: 29660
-[libx264 @ 0000022cc3b89f40] frame B:100   Avg QP:19.86  size: 23895
-[libx264 @ 0000022cc3b89f40] consecutive B-frames: 37.0% 38.1% 13.2% 11.7%
-[libx264 @ 0000022cc3b89f40] mb I  I16..4: 84.2%  1.3% 14.5%
-[libx264 @ 0000022cc3b89f40] mb P  I16..4:  2.6%  2.2%  8.2%  P16..4:  3.2%  4.2%  3.8%  0.0%  0.0%    skip:75.8%
-[libx264 @ 0000022cc3b89f40] mb B  I16..4:  1.2%  0.6%  4.4%  B16..8:  4.3%  6.1%  4.3%  direct: 0.9%  skip:78.1%  L0:45.6% L1:38.5% BI:16.0%
-[libx264 @ 0000022cc3b89f40] 8x8 transform intra:13.7% inter:18.7%
-[libx264 @ 0000022cc3b89f40] coded y,uvDC,uvAC intra: 46.5% 78.0% 71.2% inter: 6.6% 9.7% 7.7%
-[libx264 @ 0000022cc3b89f40] i16 v,h,dc,p: 51% 40%  6%  3%
-[libx264 @ 0000022cc3b89f40] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 21% 32% 41%  0%  0%  0%  2%  0%  3%
-[libx264 @ 0000022cc3b89f40] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 11% 65% 14%  0%  1%  0%  4%  0%  4%
-[libx264 @ 0000022cc3b89f40] i8c dc,h,v,p: 25% 68%  4%  3%
-[libx264 @ 0000022cc3b89f40] Weighted P-Frames: Y:5.9% UV:4.7%
-[libx264 @ 0000022cc3b89f40] ref P L0: 60.7% 15.2% 14.3%  8.7%  1.0%
-[libx264 @ 0000022cc3b89f40] ref B L0: 83.2% 14.7%  2.1%
-[libx264 @ 0000022cc3b89f40] ref B L1: 99.0%  1.0%
-[libx264 @ 0000022cc3b89f40] kb/s:31920.11

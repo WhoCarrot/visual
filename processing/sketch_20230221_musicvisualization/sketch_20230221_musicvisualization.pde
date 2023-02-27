@@ -33,13 +33,8 @@ float dropheightpercentage = 98.3;
 float lowHeightTicker = 0;
 float lowHeightTime = 60;
 
-
-void preload () {
-}
-
 void setup () {
-  // size(1920, 1080, P3D);
-  fullScreen(P3D, 2);
+  size(1280, 720, P3D);
   strokeJoin(ROUND);
   strokeCap(ROUND);
   colorMode(HSB, 360);
@@ -56,33 +51,14 @@ void setup () {
   scl = width / cols;
   
   terrain = new float[cols][rows];
-  
-  // initRecording();
 }
 
 void draw () {
-  // while (getCurrentTime() < getSoundTime() + frameDuration * frameOffset) {
-    // println(frameRate);
-
-    
-    
+  setTitle();
 
   background(backgroundHue, backgroundSaturation, backgroundBrightness);
-  
-  stroke(255, 0, 0);
-  float position;
-  if (skip != -1) {
-    position = skip;
-    jingle.cue(floor(map(skip, 0, width, 0, jingle.length())));
-    skip = -1;
-  } else {
-    position = map(jingle.position(), 0, jingle.length(), 0, width);
-  }
-  line(position, height, position, height-25);
-  noStroke();
-  
-  fft.forward( jingle.right );
-  
+  fft.forward(jingle.mix);
+
   float maxfromband = 0;
   // Loop through the entire band
   for(int i = 0; i < fft.specSize() / 2; i++)
@@ -102,10 +78,10 @@ void draw () {
     }
   }
   
-  //translate(width/2, height/2, map(jingle.position(), 0, jingle.length(), -1000, -500));
+  
   translate(width/2, height/2, map(jingle.position(), 0, jingle.length(), -1000, -500));
+  // translate(width/2, height/2, -2000);
   rotateX(PI/2);
-  //rotateZ(map(jingle.position(), 0, jingle.length(), 0, PI*10));
   
   float heightpercentage = maxfromband * 100 / maxheight;
   float c = map(heightpercentage, 0, 100, 0, 40);
@@ -117,7 +93,7 @@ void draw () {
   // Change color when nothing is happening
   if (heightpercentage < 5) {
     lowHeightTicker++;
-    if (lowHeightTicker > lowHeightTime) {
+    if (lowHeightTicker > lowHeightTime && !fill) {
       println("fill");
       fill = true;
     }
@@ -147,12 +123,7 @@ void draw () {
   strip(c+cMod, 360-cMod, -1, 1, 1, xPow, yPow, heightpercentage);
   strip(c+cMod, 360-cMod, 1, 1, -1, xPow, yPow, heightpercentage);
   strip(c+cMod, 360-cMod, -1, 1, -1, xPow, yPow, heightpercentage);
-  
-  //strip(c+cMod, 360-cMod, 1, -1, 1, xPow, yPow, heightpercentage);
-  //strip(c+cMod, 360-cMod, -1, -1, 1, xPow, yPow, heightpercentage);
-  //strip(c+cMod, 360-cMod, 1, -1, -1, xPow, yPow, heightpercentage);
-  //strip(c+cMod, 360-cMod, -1, -1, -1, xPow, yPow, heightpercentage);
-  
+
   if (heightpercentage > backgroundChangePercentage) {
     backgroundHue = c+cMod;
     if (map(heightpercentage, backgroundChangePercentage, 100, backgroundChangeMin, backgroundChangeMax) > backgroundBrightness) {
@@ -161,9 +132,6 @@ void draw () {
   } else if (backgroundBrightness > 0) {
     backgroundBrightness -= map(backgroundBrightness, 0, 360, backgroundIntensityDecay, backgroundIntensityDecay*2);
   }
-  
-  // recordFrame();
-  // }
 }
 
 void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, float xPow, float yPow, float heightpercentage) {
@@ -174,13 +142,13 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       //float c = map(h, 0, maxheight, colorMin, colorMax);
       float c = map(h, 0, maxheight, 0, 360);
       stroke(c, 360, 360);
-      float strokeWeight = map(heightpercentage, 0, 100, -maxwidth/8, maxwidth)-pow(y,2);
-      if (strokeWeight < 1)
-        strokeWeight = 1;
-      strokeWeight(strokeWeight);
+      float sw = map(heightpercentage, 0, 100, -maxwidth/8, maxwidth)-pow(y,2);
+      if (sw < 1) sw = 1;
+      strokeWeight(sw);
       if (fill) {
         fill(c, 360, 360);
       } else {
+        // fill(c, 360, map(heightpercentage, 0, 100, 0, 360));
         noFill();
       }
       float ySine = sin(map(x, 0, cols, 0, HALF_PI));
@@ -192,11 +160,24 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
   }
 }
 
+
+String prepad(int num, int amount) {
+  String unpadded = "" + num;
+  String zeroes = new String(new char[amount]).replace("\0", "0");
+  return zeroes.substring(unpadded.length()) + unpadded;
+}
+
+void setTitle() {
+  float position = map(jingle.position(), 0, jingle.length(), 0, 100);
+  String[] songParts = songname.split("/");
+  String songTitle = songParts[songParts.length - 1];
+  surface.setTitle("song: " + songTitle + " | progress: " + prepad(round(position), 3) + "/100% | fps: " + prepad(round(frameRate), 3));
+}
+
 void setMaximumHeight(String name) {
   AudioSample jingle = minim.loadSample(name, fftSize);
   
   float[] leftChannel = jingle.getChannel(AudioSample.LEFT);
-  //int fftSize = fftsize;
   float[] fftSamples = new float[fftSize];
   FFT fft = new FFT( fftSize, jingle.sampleRate());
   
