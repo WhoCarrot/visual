@@ -14,7 +14,6 @@ int multiplier = 2;
 int fftSize = 1024;
 String songname = "../../data/theme20.mp3";
 float skip = -1;
-float angle = 0;
 float maxwidth = 64;
 float[][] terrain;
 float maxheight;
@@ -28,12 +27,13 @@ float backgroundChangePercentage = 75;
 float backgroundChangeMin = 0;
 float backgroundChangeMax = 100;
 float backgroundIntensityDecay = 1;
-float dropheightpercentage = 98;
+float dropheightpercentage = 99;
 
 float lowHeightTicker = 0;
-float lowHeightTime = 60;
+float lowHeightTime = 30;
+float lowHeightThreshold = 10;
 
-float alphaDecay = .8;
+float alphaDecay = .66;
 float alphaMin = -180;
 float alphaMax = 360;
 float alphaCurrent = alphaMin;
@@ -45,8 +45,8 @@ void setup () {
   jingle.play();
   fft = new FFT( jingle.bufferSize(), jingle.sampleRate() );
 
-  size(1280, 720, P3D);
-  // fullScreen(P3D, 2);
+  // size(1280, 720, P3D);
+  fullScreen(P3D, 1);
   strokeJoin(ROUND);
   strokeCap(ROUND);
   colorMode(HSB, 360);
@@ -64,7 +64,7 @@ void draw () {
   setTitle();
 
   background(backgroundHue, backgroundSaturation, backgroundBrightness);
-  fft.forward(jingle.right);
+  fft.forward(jingle.mix);
 
   float maxfromband = 0;
   // Loop through the entire band
@@ -98,7 +98,7 @@ void draw () {
   float yPow = 2;
   
   // Change color when nothing is happening
-  if (heightpercentage < 5) {
+  if (heightpercentage < lowHeightThreshold) {
     lowHeightTicker++;
     if (lowHeightTicker > lowHeightTime && !fill) {
       println("fill");
