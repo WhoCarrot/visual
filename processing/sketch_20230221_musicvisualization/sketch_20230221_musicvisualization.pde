@@ -33,7 +33,7 @@ float lowHeightTicker = 0;
 float lowHeightTime = 60;
 float lowHeightThreshold = 10;
 
-float alphaDecay = .66;
+float alphaDecay = .8;
 float alphaMin = -180;
 float alphaMax = 360;
 float alphaCurrent = alphaMin;
@@ -152,7 +152,10 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       if (sw < 1) sw = 1;
       strokeWeight(sw);
       if (fill) {
-        float alphaValue = map(y, 0, rows, alphaMax, alphaMin) + map(heightpercentage, 0, 100, alphaMin, alphaMax);
+
+
+
+        float alphaValue = map(y, 0, rows, alphaMax, alphaMin) / 2 + map(heightpercentage, 0, 100, alphaMin, alphaMax) / 2;
         if (alphaValue > alphaCurrent) {
           alphaCurrent = alphaValue;
         } else {
