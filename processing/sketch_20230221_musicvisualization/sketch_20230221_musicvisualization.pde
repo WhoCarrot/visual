@@ -41,8 +41,8 @@ void setup () {
   jingle.play();
   fft = new FFT( jingle.bufferSize(), jingle.sampleRate() );
 
-  // size(1920, 1080, P3D);
-  fullScreen(P3D, 2);
+  size(1280, 720, P3D);
+  // fullScreen(P3D, 2);
   strokeJoin(ROUND);
   strokeCap(ROUND);
   colorMode(HSB, 360);
