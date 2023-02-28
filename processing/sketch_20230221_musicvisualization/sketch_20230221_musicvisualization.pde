@@ -33,6 +33,11 @@ float dropheightpercentage = 98;
 float lowHeightTicker = 0;
 float lowHeightTime = 60;
 
+float alphaDecay = .8;
+float alphaMin = -180;
+float alphaMax = 360;
+float alphaCurrent = alphaMin;
+
 void setup () {
   minim = new Minim(this);
   setMaximumHeight(songname);
@@ -40,8 +45,8 @@ void setup () {
   jingle.play();
   fft = new FFT( jingle.bufferSize(), jingle.sampleRate() );
 
-  // size(1920, 1080, P3D);
-  fullScreen(P3D, 2);
+  size(1280, 720, P3D);
+  // fullScreen(P3D, 2);
   strokeJoin(ROUND);
   strokeCap(ROUND);
   colorMode(HSB, 360);
@@ -147,9 +152,16 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       if (sw < 1) sw = 1;
       strokeWeight(sw);
       if (fill) {
-        float alphaValue = min(map(y, 0, rows, 360, 0) + map(heightpercentage, 0, 100, 0, 360), 360);
-        fill(color(c, 360, 360, alphaValue));
-        stroke(color(c, 360, 360, alphaValue));
+        float alphaValue = map(y, 0, rows, alphaMax, alphaMin) + map(heightpercentage, 0, 100, alphaMin, alphaMax);
+        if (alphaValue > alphaCurrent) {
+          alphaCurrent = alphaValue;
+        } else {
+          alphaCurrent -= alphaDecay;
+        }
+        alphaCurrent = max(min(alphaCurrent, 360), 0);
+
+        fill(color(c, 360, 360, alphaCurrent));
+        stroke(color(c, 360, 360, alphaCurrent));
       } else {
         // fill(c, 360, map(heightpercentage, 0, 100, 0, 360));
         stroke(c, 360, 360);
