@@ -1,0 +1,26 @@
+{
+    "fft": {
+        "size": 1024
+    },
+    "background": {
+        "threshold": 75, // The threshold in percentage of max amplitude, over this the background will change color
+        "min": 0, // The minimum intensity of the background
+        "max": 100, // The maximum intensity of the background
+        "decay": 1 // How fast the background intensity should drop after being bumped up
+    },
+    "strips": {
+        "columns": 16, // Amount of horizontal strips present
+        "rows": 32, // Amount of frequency bands included in each strip
+        "multiplier": 2, // Height of each peak will be multiplied by this number
+        "maxwidth": 64 // idk what this is
+    },
+    "triggers": {
+        "drop": {
+            "threshold": 98 // The threshold in percentage of max amplitude, over this the visualisation will change
+        },
+        "break": {
+            "threshold": 10, // The threshold in percentage of max amplitude, under this the visualisation will return to normal
+            "thresholdtime": 60 // The amount of frames the music amplitude has to be below the threshold
+        }
+    }
+}

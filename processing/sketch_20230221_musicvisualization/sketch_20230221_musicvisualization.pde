@@ -14,7 +14,6 @@ int multiplier = 2;
 int fftSize = 1024;
 String songname = "../../data/theme20.mp3";
 float skip = -1;
-float angle = 0;
 float maxwidth = 64;
 float[][] terrain;
 float maxheight;
@@ -34,7 +33,7 @@ float lowHeightTicker = 0;
 float lowHeightTime = 60;
 float lowHeightThreshold = 10;
 
-float alphaDecay = .8;
+float alphaDecay = .66;
 float alphaMin = -180;
 float alphaMax = 360;
 float alphaCurrent = alphaMin;
