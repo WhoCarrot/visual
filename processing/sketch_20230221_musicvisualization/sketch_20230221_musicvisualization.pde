@@ -17,7 +17,7 @@ int cols = 16;
 int rows = 32;
 int multiplier = 2;
 int fftSize = 1024;
-String songname = "../../data/theme11.mp3";
+String songname = "../../data/theme20.mp3";
 float skip = -1;
 float maxwidth = 64;
 float[][] terrain;
@@ -32,7 +32,7 @@ float backgroundChangePercentage = 50;
 float backgroundChangeMin = 0;
 float backgroundChangeMax = 100;
 float backgroundIntensityDecay = 1;
-float dropheightpercentage = 85;
+float dropheightpercentage = 98;
 
 float lowHeightTicker = 0;
 float lowHeightTime = 30;
@@ -61,9 +61,9 @@ void setup () {
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
   fillPasses = new Pass[] {
-    new PixelatePass(this, 250f),
+    // new PixelatePass(this, 250f),
     new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.4, 80, 40),
+    new BloomPass(this, 0.4, 20, 40),
     // new BloomPass(this, 0.1, 300, 300),
     new VignettePass(this, 0.8, 0.3),
     
@@ -220,10 +220,10 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       }
       float ySine = sin(map(x, 0, cols, 0, HALF_PI));
       float xSine = tan(map(y, 0, rows-1, 0, HALF_PI));
-      // vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl, zMod*terrain[x][y]/*+zMod*pow(y,yPow)*pow(x,xPow)*/);
-      // vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl, zMod*terrain[x][y+1]/*+zMod*pow(y,yPow)*pow(x,xPow)*/);
-      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow));
-      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow));
+      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl, zMod*terrain[x][y]/*+zMod*pow(y,yPow)*pow(x,xPow)*/);
+      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl, zMod*terrain[x][y+1]/*+zMod*pow(y,yPow)*pow(x,xPow)*/);
+      // vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow));
+      // vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow));
     }
     endShape();
   }
