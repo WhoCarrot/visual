@@ -25,6 +25,9 @@ float maxheight;
 float cMod = 0.0;
 float desiredcMod = 0.0;
 
+float fillFramerate = 144;
+float noFillFramerate = 144;
+
 float backgroundHue = 0.0;
 float backgroundBrightness = 0.0;
 float backgroundSaturation = 0;
@@ -32,7 +35,7 @@ float backgroundChangePercentage = 50;
 float backgroundChangeMin = 0;
 float backgroundChangeMax = 100;
 float backgroundIntensityDecay = 1;
-float dropheightpercentage = 85;
+float dropheightpercentage = 100;
 
 float lowHeightTicker = 0;
 float lowHeightTime = 30;
@@ -42,6 +45,11 @@ float alphaDecay = .33;
 float alphaMin = -270;
 float alphaMax = 360;
 float alphaCurrent = alphaMin;
+
+float zEnableMin = -0.33;
+float zEnableMax = 1;
+float zEnable = zEnableMax;
+float zEnableSpeed = 0.001;
 
 // PostFX fx;
 PostFXSupervisor supervisor;
@@ -61,43 +69,65 @@ void setup () {
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
   fillPasses = new Pass[] {
-    new PixelatePass(this, 250f),
+    new PixelatePass(this, 400f),
     new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.4, 80, 40),
+    new BloomPass(this, 0.4, 40, 40),
     // new BloomPass(this, 0.1, 300, 300),
     new VignettePass(this, 0.8, 0.3),
     
   };
 
-  noFillPasses = fillPasses;
+  // noFillPasses = fillPasses;
 
-  // noFillPasses = new Pass[] {
-  //   // new BrightPass(this, 0.3f),
-  //   // new SobelPass(this),
-  //   // new RGBSplitPass(this),
-  //   // new PixelatePass(this, 150f),
-  //   new ChromaticAberrationPass(this),
-  //   new BloomPass(this, 0.4, 40, 40),
-  //   // new BloomPass(this, 0.6, 40, 40),
-  //   // new ToonPass(this),
-  //   new VignettePass(this, 0.8, 0.3),
-  // };
+  noFillPasses = new Pass[] {
+    new PixelatePass(this, 400f),
+    new ChromaticAberrationPass(this),
+    new BloomPass(this, 0.4, 40, 40),
+    // new BloomPass(this, 0.1, 300, 300),
+    new VignettePass(this, 0.8, 0.3),
+  };
 
   // size(1280, 720, P3D);
-  fullScreen(P3D, 1);
+  fullScreen(P3D, 2);
   strokeJoin(ROUND);
   strokeCap(ROUND);
   colorMode(HSB, 360);
   smooth();
-  frameRate(144);
+  frameRate(fillFramerate);
   noStroke();
 
   scl = width / cols;
   
   terrain = new float[cols][rows];
+
+  jingle.cue(120500);
 }
 
+void setFill(boolean fillValue) {
+  if (fillValue == fill) return;
+
+  if (fillValue) {
+    println("fill");
+    println(jingle.position());
+    fill = true;
+    frameRate(fillFramerate);
+  } else {
+    backgroundBrightness = 360;
+    fill = false;
+    println("nofill");
+    println(jingle.position());
+    // println(heightpercentage);
+    frameRate(noFillFramerate);
+  }
+}
+
+boolean hardcodedDrop = false;
 void draw () {
+  if (jingle.position() >= 132350 && !hardcodedDrop) {
+    setFill(false);
+    hardcodedDrop = true;
+  }
+
   noStroke();
   setTitle();
 
@@ -141,8 +171,7 @@ void draw () {
   if (heightpercentage < lowHeightThreshold) {
     lowHeightTicker++;
     if (lowHeightTicker > lowHeightTime && !fill) {
-      println("fill");
-      fill = true;
+      setFill(true);
     }
     desiredcMod = map(jingle.position(), 0 , jingle.length(), 0, 360);
   } else {
@@ -151,10 +180,7 @@ void draw () {
   
   if (heightpercentage > dropheightpercentage) {
     if (fill) {
-      backgroundBrightness = 360;
-      fill = false;
-      println("nofill");
-      println(heightpercentage);
+      setFill(false);
     }
   }
   
@@ -179,6 +205,13 @@ void draw () {
   } else if (backgroundBrightness > 0) {
     backgroundBrightness -= map(backgroundBrightness, 0, 360, backgroundIntensityDecay, backgroundIntensityDecay*2);
   }
+
+  if (fill) {
+    zEnable += zEnableSpeed;
+  } else {
+    zEnable -= zEnableSpeed;
+  }
+  zEnable = min(max(zEnable, zEnableMin), zEnableMax);
 
   supervisor.render();
 
@@ -218,12 +251,20 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
         stroke(c, 360, 360);
         noFill();
       }
+
+
       float ySine = sin(map(x, 0, cols, 0, HALF_PI));
       float xSine = tan(map(y, 0, rows-1, 0, HALF_PI));
-      // vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl, zMod*terrain[x][y]/*+zMod*pow(y,yPow)*pow(x,xPow)*/);
-      // vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl, zMod*terrain[x][y+1]/*+zMod*pow(y,yPow)*pow(x,xPow)*/);
-      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow));
-      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow));
+
+      
+      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable);
+      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable);
+
+      // if (fill) {
+      // } else {
+      //   vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl, zMod*terrain[x][y]/*+zMod*pow(y,yPow)*pow(x,xPow)*/);
+      //   vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl, zMod*terrain[x][y+1]/*+zMod*pow(y,yPow)*pow(x,xPow)*/);
+      // }
     }
     endShape();
   }
@@ -272,4 +313,10 @@ void setMaximumHeight(String name) {
     }
   }
   jingle.close();
+}
+
+void keyPressed() {
+  if (key == 'f' || key == 'F') {
+    setFill(!fill);
+  }
 }
