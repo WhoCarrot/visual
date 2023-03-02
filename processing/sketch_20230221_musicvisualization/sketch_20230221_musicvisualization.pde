@@ -17,7 +17,7 @@ int cols = 16;
 int rows = 32;
 int multiplier = 2;
 int fftSize = 1024;
-String songname = "../../data/theme20.mp3";
+String songname = "../../data/theme11.mp3";
 float skip = -1;
 float maxwidth = 64;
 float[][] terrain;
@@ -28,24 +28,25 @@ float desiredcMod = 0.0;
 float backgroundHue = 0.0;
 float backgroundBrightness = 0.0;
 float backgroundSaturation = 0;
-float backgroundChangePercentage = 75;
+float backgroundChangePercentage = 50;
 float backgroundChangeMin = 0;
 float backgroundChangeMax = 100;
 float backgroundIntensityDecay = 1;
-float dropheightpercentage = 99;
+float dropheightpercentage = 85;
 
 float lowHeightTicker = 0;
 float lowHeightTime = 30;
 float lowHeightThreshold = 10;
 
-float alphaDecay = .66;
-float alphaMin = -180;
+float alphaDecay = .33;
+float alphaMin = -270;
 float alphaMax = 360;
 float alphaCurrent = alphaMin;
 
 // PostFX fx;
 PostFXSupervisor supervisor;
-Pass[] passes;
+Pass[] fillPasses;
+Pass[] noFillPasses;
 
 void setup () {
   // cam = new PeasyCam(this, 100);
@@ -59,16 +60,28 @@ void setup () {
   fft = new FFT( jingle.bufferSize(), jingle.sampleRate() );
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
-  passes = new Pass[] {
-    // new BrightPass(this, 0.3f),
-    // new SobelPass(this),
-    // new PixelatePass(this, 300f),
-    // new RGBSplitPass(this),
-    // new ChromaticAberrationPass(this),
-    // new BloomPass(this, 0.4, 40, 40),
-    // new ToonPass(this),
+  fillPasses = new Pass[] {
+    new PixelatePass(this, 250f),
+    new ChromaticAberrationPass(this),
+    new BloomPass(this, 0.4, 80, 40),
+    // new BloomPass(this, 0.1, 300, 300),
     new VignettePass(this, 0.8, 0.3),
+    
   };
+
+  noFillPasses = fillPasses;
+
+  // noFillPasses = new Pass[] {
+  //   // new BrightPass(this, 0.3f),
+  //   // new SobelPass(this),
+  //   // new RGBSplitPass(this),
+  //   // new PixelatePass(this, 150f),
+  //   new ChromaticAberrationPass(this),
+  //   new BloomPass(this, 0.4, 40, 40),
+  //   // new BloomPass(this, 0.6, 40, 40),
+  //   // new ToonPass(this),
+  //   new VignettePass(this, 0.8, 0.3),
+  // };
 
   // size(1280, 720, P3D);
   fullScreen(P3D, 1);
@@ -121,6 +134,8 @@ void draw () {
   //float xPow = map(jingle.position(), 0, jingle.length(), -2, 10);
   float xPow = 0;
   float yPow = 2;
+
+  // frameRate(map(heightpercentage, 0, 100, 60, 144));
   
   // Change color when nothing is happening
   if (heightpercentage < lowHeightThreshold) {
@@ -166,7 +181,10 @@ void draw () {
   }
 
   supervisor.render();
-  for (Pass pass : passes) {
+
+
+
+  for (Pass pass : fill ? fillPasses : noFillPasses) {
     supervisor.pass(pass);
   }
   supervisor.compose();
@@ -191,7 +209,7 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
         } else {
           alphaCurrent -= alphaDecay;
         }
-        alphaCurrent = max(min(alphaCurrent, 360), 0);
+        alphaCurrent = max(min(alphaCurrent, alphaMax, 360), alphaMin, 0);
 
         fill(color(c, 360, 360, alphaCurrent));
         stroke(color(c, 360, 360, alphaCurrent));
@@ -202,10 +220,10 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       }
       float ySine = sin(map(x, 0, cols, 0, HALF_PI));
       float xSine = tan(map(y, 0, rows-1, 0, HALF_PI));
-      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl, zMod*terrain[x][y]/*+zMod*pow(y,yPow)*pow(x,xPow)*/);
-      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl, zMod*terrain[x][y+1]/*+zMod*pow(y,yPow)*pow(x,xPow)*/);
-      // vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow));
-      // vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow));
+      // vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl, zMod*terrain[x][y]/*+zMod*pow(y,yPow)*pow(x,xPow)*/);
+      // vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl, zMod*terrain[x][y+1]/*+zMod*pow(y,yPow)*pow(x,xPow)*/);
+      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow));
+      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow));
     }
     endShape();
   }
