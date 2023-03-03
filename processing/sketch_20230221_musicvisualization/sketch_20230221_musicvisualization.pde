@@ -88,7 +88,7 @@ void setup () {
   };
 
   // size(1280, 720, P3D);
-  fullScreen(P3D, 2);
+  fullScreen(P3D, 1);
   strokeJoin(ROUND);
   strokeCap(ROUND);
   colorMode(HSB, 360);
@@ -100,7 +100,7 @@ void setup () {
   
   terrain = new float[cols][rows];
 
-  jingle.cue(120500);
+  // jingle.cue(120500);
 }
 
 void setFill(boolean fillValue) {
