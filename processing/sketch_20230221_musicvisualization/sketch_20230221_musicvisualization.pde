@@ -121,12 +121,12 @@ void setFill(boolean fillValue) {
   }
 }
 
-boolean hardcodedDrop = false;
+// boolean hardcodedDrop = false;
 void draw () {
-  if (jingle.position() >= 132350 && !hardcodedDrop) {
-    setFill(false);
-    hardcodedDrop = true;
-  }
+  // if (jingle.position() >= 132350 && !hardcodedDrop) {
+  //   setFill(false);
+  //   hardcodedDrop = true;
+  // }
 
   noStroke();
   setTitle();
