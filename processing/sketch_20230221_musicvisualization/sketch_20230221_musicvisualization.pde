@@ -15,9 +15,9 @@ boolean fill = true;
 int scl;
 int cols = 16;
 int rows = 32;
-int multiplier = 2;
 int fftSize = 1024;
-String songname = "../../data/theme11.mp3";
+float multiplier = 1;
+String songname = "../../data/theme29.mp3";
 float skip = -1;
 float maxwidth = 64;
 float[][] terrain;
@@ -25,8 +25,8 @@ float maxheight;
 float cMod = 0.0;
 float desiredcMod = 0.0;
 
-float fillFramerate = 144;
-float noFillFramerate = 144;
+float fillFramerate = 30;
+float noFillFramerate = 30;
 
 float backgroundHue = 0.0;
 float backgroundBrightness = 0.0;
@@ -35,7 +35,7 @@ float backgroundChangePercentage = 50;
 float backgroundChangeMin = 0;
 float backgroundChangeMax = 100;
 float backgroundIntensityDecay = 1;
-float dropheightpercentage = 100;
+float dropheightpercentage = 190;
 
 float lowHeightTicker = 0;
 float lowHeightTime = 30;
@@ -46,8 +46,8 @@ float alphaMin = -270;
 float alphaMax = 360;
 float alphaCurrent = alphaMin;
 
-float zEnableMin = -0.33;
-float zEnableMax = 1;
+float zEnableMin = -3;
+float zEnableMax = -3;
 float zEnable = zEnableMax;
 float zEnableSpeed = 0.001;
 
@@ -69,26 +69,30 @@ void setup () {
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
   fillPasses = new Pass[] {
+    new BrightPass(this, 0.5f),
     new PixelatePass(this, 400f),
+    // new ChromaticAberrationPass(this),
+    // new PixelatePass(this, 800f),
+    // new BrightPass(this, 0.1f),
     new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.4, 40, 40),
+    new BloomPass(this, 0.2, 80, 40),
     // new BloomPass(this, 0.1, 300, 300),
     new VignettePass(this, 0.8, 0.3),
     
   };
 
-  // noFillPasses = fillPasses;
+  noFillPasses = fillPasses;
 
-  noFillPasses = new Pass[] {
-    new PixelatePass(this, 400f),
-    new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.4, 40, 40),
-    // new BloomPass(this, 0.1, 300, 300),
-    new VignettePass(this, 0.8, 0.3),
-  };
+  // noFillPasses = new Pass[] {
+  //   new PixelatePass(this, 400f),
+  //   new ChromaticAberrationPass(this),
+  //   new BloomPass(this, 0.4, 40, 40),
+  //   // new BloomPass(this, 0.1, 300, 300),
+  //   new VignettePass(this, 0.8, 0.3),
+  // };
 
   // size(1280, 720, P3D);
-  fullScreen(P3D, 1);
+  fullScreen(P3D, 2);
   strokeJoin(ROUND);
   strokeCap(ROUND);
   colorMode(HSB, 360);
@@ -100,7 +104,7 @@ void setup () {
   
   terrain = new float[cols][rows];
 
-  // jingle.cue(120500);
+  // jingle.cue(40000);
 }
 
 void setFill(boolean fillValue) {
@@ -131,7 +135,7 @@ void draw () {
   noStroke();
   setTitle();
 
-  background(backgroundHue, backgroundSaturation, backgroundBrightness);
+  background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
   fft.forward(jingle.mix);
 
   float maxfromband = 0;
@@ -192,10 +196,10 @@ void draw () {
     }
   }
   
-  strip(c+cMod, 360-cMod, 1, 1, 1, xPow, yPow, heightpercentage);
-  strip(c+cMod, 360-cMod, -1, 1, 1, xPow, yPow, heightpercentage);
-  strip(c+cMod, 360-cMod, 1, 1, -1, xPow, yPow, heightpercentage);
-  strip(c+cMod, 360-cMod, -1, 1, -1, xPow, yPow, heightpercentage);
+  strip(c+cMod, 360-cMod, 2, 1, 1, xPow, yPow, heightpercentage, 1);
+  strip(c+cMod, 360-cMod, -2, 1, 1, xPow, yPow, heightpercentage, 1);
+  strip(c+cMod, 360-cMod, .2, 1, -1, xPow, yPow, heightpercentage, .6);
+  strip(c+cMod, 360-cMod, -.2, 1, -1, xPow, yPow, heightpercentage, .6);
 
   if (heightpercentage > backgroundChangePercentage) {
     backgroundHue = c+cMod;
@@ -225,7 +229,7 @@ void draw () {
   // saveFrame("exports/image" + frameCount + ".jpg");
 }
 
-void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, float xPow, float yPow, float heightpercentage) {
+void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, float xPow, float yPow, float heightpercentage, float alphaMod) {
   for (int y = 0; y < rows-1; y++) {
     beginShape(TRIANGLE_STRIP);
     for (int x = 0; x < cols; x++) {
@@ -244,8 +248,9 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
         }
         alphaCurrent = max(min(alphaCurrent, alphaMax, 360), alphaMin, 0);
 
-        fill(color(c, 360, 360, alphaCurrent));
-        stroke(color(c, 360, 360, alphaCurrent));
+        fill(color(c, 360, 360, alphaCurrent * alphaMod));
+        // noFill();
+        stroke(color(c, 360, 360, alphaCurrent * alphaMod));
       } else {
         // fill(c, 360, map(heightpercentage, 0, 100, 0, 360));
         stroke(c, 360, 360);
@@ -257,8 +262,8 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       float xSine = tan(map(y, 0, rows-1, 0, HALF_PI));
 
       
-      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable);
-      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable);
+      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable-300);
+      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable-300);
 
       // if (fill) {
       // } else {
