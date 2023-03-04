@@ -42,12 +42,12 @@ float lowHeightTime = 30;
 float lowHeightThreshold = 10;
 
 float alphaDecay = .33;
-float alphaMin = -270;
+float alphaMin = -180;
 float alphaMax = 360;
 float alphaCurrent = alphaMin;
 
-float zEnableMin = -3;
-float zEnableMax = -3;
+float zEnableMin = -0.33;
+float zEnableMax = 1;
 float zEnable = zEnableMax;
 float zEnableSpeed = 0.001;
 
@@ -196,10 +196,10 @@ void draw () {
     }
   }
   
-  strip(c+cMod, 360-cMod, 2, 1, 1, xPow, yPow, heightpercentage, 1);
-  strip(c+cMod, 360-cMod, -2, 1, 1, xPow, yPow, heightpercentage, 1);
-  strip(c+cMod, 360-cMod, .2, 1, -1, xPow, yPow, heightpercentage, .6);
-  strip(c+cMod, 360-cMod, -.2, 1, -1, xPow, yPow, heightpercentage, .6);
+  strip(c+cMod, 360-cMod, 1, 1, 1, xPow, yPow, heightpercentage);
+  strip(c+cMod, 360-cMod, -1, 1, 1, xPow, yPow, heightpercentage);
+  strip(c+cMod, 360-cMod, 1, 1, -1, xPow, yPow, heightpercentage);
+  strip(c+cMod, 360-cMod, -1, 1, -1, xPow, yPow, heightpercentage);
 
   if (heightpercentage > backgroundChangePercentage) {
     backgroundHue = c+cMod;
@@ -229,7 +229,7 @@ void draw () {
   // saveFrame("exports/image" + frameCount + ".jpg");
 }
 
-void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, float xPow, float yPow, float heightpercentage, float alphaMod) {
+void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, float xPow, float yPow, float heightpercentage) {
   for (int y = 0; y < rows-1; y++) {
     beginShape(TRIANGLE_STRIP);
     for (int x = 0; x < cols; x++) {
@@ -248,9 +248,8 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
         }
         alphaCurrent = max(min(alphaCurrent, alphaMax, 360), alphaMin, 0);
 
-        fill(color(c, 360, 360, alphaCurrent * alphaMod));
-        // noFill();
-        stroke(color(c, 360, 360, alphaCurrent * alphaMod));
+        fill(color(c, 360, 360, alphaCurrent));
+        stroke(color(c, 360, 360, alphaCurrent));
       } else {
         // fill(c, 360, map(heightpercentage, 0, 100, 0, 360));
         stroke(c, 360, 360);
@@ -262,8 +261,8 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       float xSine = tan(map(y, 0, rows-1, 0, HALF_PI));
 
       
-      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable-300);
-      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable-300);
+      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable);
+      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable);
 
       // if (fill) {
       // } else {
