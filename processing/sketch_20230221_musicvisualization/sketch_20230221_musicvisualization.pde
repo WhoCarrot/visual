@@ -17,7 +17,7 @@ int cols = 16;
 int rows = 32;
 int fftSize = 1024;
 float multiplier = 1;
-String songname = "../../data/theme29.mp3";
+String songname = "../../data/theme28.mp3";
 float skip = -1;
 float maxwidth = 64;
 float[][] terrain;
