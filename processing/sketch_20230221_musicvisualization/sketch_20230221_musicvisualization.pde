@@ -17,9 +17,9 @@ int cols = 16;
 int rows = 32;
 int fftSize = 1024;
 float multiplier = 1;
-String songname = "../../data/theme28.mp3";
+String songname = "../../data/theme29.mp3";
 float skip = -1;
-float maxwidth = 64;
+float maxwidth = 1024;
 float[][] terrain;
 float maxheight;
 float cMod = 0.0;
@@ -41,8 +41,8 @@ float lowHeightTicker = 0;
 float lowHeightTime = 30;
 float lowHeightThreshold = 10;
 
-float alphaDecay = .33;
-float alphaMin = -180;
+float alphaDecay = .5;
+float alphaMin = -270;
 float alphaMax = 360;
 float alphaCurrent = alphaMin;
 
@@ -71,11 +71,17 @@ void setup () {
   fillPasses = new Pass[] {
     new BrightPass(this, 0.5f),
     new PixelatePass(this, 400f),
+    // new SobelPass(this),
+    // new PixelatePass(this, 400f),
+    
+    // new SobelPass(this),
+    // new PixelatePass(this, 200f),
+
     // new ChromaticAberrationPass(this),
     // new PixelatePass(this, 800f),
     // new BrightPass(this, 0.1f),
     new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.2, 80, 40),
+    new BloomPass(this, 0.2, 120, 40),
     // new BloomPass(this, 0.1, 300, 300),
     new VignettePass(this, 0.8, 0.3),
     
@@ -322,5 +328,11 @@ void setMaximumHeight(String name) {
 void keyPressed() {
   if (key == 'f' || key == 'F') {
     setFill(!fill);
+  } else if (key == CODED) {
+    if (keyCode == RIGHT) {
+      jingle.cue(jingle.position() + 10000);
+    } else if (keyCode == LEFT) {
+      jingle.cue(jingle.position() - 10000);
+    }
   }
 }
