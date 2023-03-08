@@ -17,7 +17,7 @@ int cols = 16;
 int rows = 32;
 int fftSize = 1024;
 float multiplier = 1;
-String songname = "../../data/theme29.mp3";
+String songname = "../../data/theme28.mp3";
 float skip = -1;
 float maxwidth = 1024;
 float[][] terrain;
@@ -55,6 +55,9 @@ float zEnableSpeed = 0.001;
 PostFXSupervisor supervisor;
 Pass[] fillPasses;
 Pass[] noFillPasses;
+
+
+Slice[] slices;
 
 void setup () {
   // cam = new PeasyCam(this, 100);
@@ -146,7 +149,7 @@ void draw () {
 
   float maxfromband = 0;
   // Loop through the entire band
-  for(int i = 0; i < fft.specSize() / 2; i++)
+  for(int i = 0; i < fft.specSize(); i++)
   {
     // todo scale cols to specsize
     if (i >= cols) {
@@ -225,8 +228,6 @@ void draw () {
 
   supervisor.render();
 
-
-
   for (Pass pass : fill ? fillPasses : noFillPasses) {
     supervisor.pass(pass);
   }
@@ -242,7 +243,7 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       float h = terrain[x][y];
       //float c = map(h, 0, maxheight, colorMin, colorMax);
       float c = map(h, 0, maxheight, 0, 360);
-      float sw = map(heightpercentage, 0, 100, -maxwidth/8, maxwidth)-pow(y,2);
+      float sw = map(heightpercentage, 0, 100, -maxwidth/8, maxwidth)-pow(y,2) : 1;
       if (sw < 1) sw = 1;
       strokeWeight(sw);
       if (fill) {
