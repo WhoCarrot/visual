@@ -17,7 +17,7 @@ int cols = 16;
 int rows = 32;
 int fftSize = 1024;
 float multiplier = 1;
-String songname = "../../data/theme29.mp3";
+String songname = "../../data/theme43.mp3";
 float skip = -1;
 float maxwidth = 1024;
 float[][] terrain;
@@ -26,7 +26,7 @@ float cMod = 0.0;
 float desiredcMod = 0.0;
 
 float fillFramerate = 30;
-float noFillFramerate = 30;
+float noFillFramerate = fillFramerate;
 
 float backgroundHue = 0.0;
 float backgroundBrightness = 0.0;
@@ -48,8 +48,12 @@ float alphaCurrent = alphaMin;
 
 float zEnableMin = -0.33;
 float zEnableMax = 1;
-float zEnable = zEnableMax;
-float zEnableSpeed = 0.001;
+// float zEnable = -1;
+// float zEnable = -.33;
+// float zEnable = .33;
+float zEnable = 0;
+
+float zEnableSpeed = 0;
 
 // PostFX fx;
 PostFXSupervisor supervisor;
@@ -69,10 +73,10 @@ void setup () {
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
   fillPasses = new Pass[] {
-    new BrightPass(this, 0.5f),
-    new PixelatePass(this, 400f),
+    new BrightPass(this, 0.7f),
+    // new PixelatePass(this, 800f),
     // new SobelPass(this),
-    // new PixelatePass(this, 400f),
+    new PixelatePass(this, 400f),
     
     // new SobelPass(this),
     // new PixelatePass(this, 200f),
@@ -81,7 +85,7 @@ void setup () {
     // new PixelatePass(this, 800f),
     // new BrightPass(this, 0.1f),
     new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.2, 120, 40),
+    new BloomPass(this, 0.2, 80, 40),
     // new BloomPass(this, 0.1, 300, 300),
     new VignettePass(this, 0.8, 0.3),
     
@@ -106,7 +110,7 @@ void setup () {
   frameRate(fillFramerate);
   noStroke();
 
-  scl = width / cols;
+  scl = width / cols / 2;
   
   terrain = new float[cols][rows];
 
@@ -216,17 +220,14 @@ void draw () {
     backgroundBrightness -= map(backgroundBrightness, 0, 360, backgroundIntensityDecay, backgroundIntensityDecay*2);
   }
 
-  if (fill) {
-    zEnable += zEnableSpeed;
-  } else {
-    zEnable -= zEnableSpeed;
-  }
-  zEnable = min(max(zEnable, zEnableMin), zEnableMax);
+  // if (fill) {
+  //   zEnable += zEnableSpeed;
+  // } else {
+  //   zEnable -= zEnableSpeed;
+  // }
+  // zEnable = min(max(zEnable, zEnableMin), zEnableMax);
 
   supervisor.render();
-
-
-
   for (Pass pass : fill ? fillPasses : noFillPasses) {
     supervisor.pass(pass);
   }
@@ -335,4 +336,10 @@ void keyPressed() {
       jingle.cue(jingle.position() - 10000);
     }
   }
+}
+
+void mouseWheel(MouseEvent event) {
+  float scrollAmount = event.getCount();
+  zEnable += scrollAmount;
+  println(zEnable);
 }
