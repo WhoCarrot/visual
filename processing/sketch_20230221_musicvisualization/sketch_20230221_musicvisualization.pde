@@ -17,7 +17,7 @@ int cols = 16;
 int rows = 32;
 int fftSize = 1024;
 float multiplier = 1;
-String songname = "../../data/theme41.mp3";
+String songname = "../../data/theme38.mp3";
 float skip = -1;
 float maxwidth = 1024;
 float[][] terrain;
@@ -94,7 +94,7 @@ void setup () {
   // };
 
   // size(1280, 720, P3D);
-  fullScreen(P3D, 2);
+  fullScreen(P3D, 1);
   strokeJoin(ROUND);
   strokeCap(ROUND);
   colorMode(HSB, 360, 360, 360, 360);
