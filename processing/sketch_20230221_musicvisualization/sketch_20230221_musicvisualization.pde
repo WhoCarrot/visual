@@ -17,7 +17,7 @@ int cols = 16;
 int rows = 32;
 int fftSize = 1024;
 float multiplier = 1;
-String songname = "../../data/theme43.mp3";
+String songname = "../../data/theme41.mp3";
 float skip = -1;
 float maxwidth = 1024;
 float[][] terrain;
@@ -61,6 +61,7 @@ Pass[] fillPasses;
 Pass[] noFillPasses;
 
 void setup () {
+  maxwidth = width / 2;
   // cam = new PeasyCam(this, 100);
   // cam.setMinimumDistance(50);
   // cam.setMaximumDistance(500);
@@ -73,22 +74,13 @@ void setup () {
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
   fillPasses = new Pass[] {
-    new BrightPass(this, 0.7f),
-    // new PixelatePass(this, 800f),
+    new BrightPass(this, 0.2),
     // new SobelPass(this),
-    new PixelatePass(this, 400f),
-    
-    // new SobelPass(this),
-    // new PixelatePass(this, 200f),
-
-    // new ChromaticAberrationPass(this),
-    // new PixelatePass(this, 800f),
-    // new BrightPass(this, 0.1f),
+    // new PixelatePass(this, 400f),
+    new SobelPass(this),
     new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.2, 80, 40),
-    // new BloomPass(this, 0.1, 300, 300),
-    new VignettePass(this, 0.8, 0.3),
-    
+    // new BloomPass(this, 0.2, 80, 40),
+    new VignettePass(this, .8, .3),
   };
 
   noFillPasses = fillPasses;
@@ -105,7 +97,7 @@ void setup () {
   fullScreen(P3D, 2);
   strokeJoin(ROUND);
   strokeCap(ROUND);
-  colorMode(HSB, 360);
+  colorMode(HSB, 360, 360, 360, 360);
   smooth();
   frameRate(fillFramerate);
   noStroke();
@@ -137,6 +129,8 @@ void setFill(boolean fillValue) {
 
 // boolean hardcodedDrop = false;
 void draw () {
+
+
   // if (jingle.position() >= 132350 && !hardcodedDrop) {
   //   setFill(false);
   //   hardcodedDrop = true;
@@ -145,7 +139,8 @@ void draw () {
   noStroke();
   setTitle();
 
-  background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
+  // background(color(360, 360, 0, .0001));
+  // background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
   fft.forward(jingle.mix);
 
   float maxfromband = 0;
@@ -168,8 +163,8 @@ void draw () {
   }
   
   
-  translate(width/2, height/2, map(jingle.position(), 0, jingle.length(), -1000, -500));
-  // translate(width/2, height/2, -2000);
+  // translate(width/2, height/2, map(jingle.position(), 0, jingle.length(), -1000, -500));
+  translate(width/2, height/2, -5000);
   rotateX(PI/2);
   
   float heightpercentage = maxfromband * 100 / maxheight;
@@ -256,6 +251,7 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
         alphaCurrent = max(min(alphaCurrent, alphaMax, 360), alphaMin, 0);
 
         fill(color(c, 360, 360, alphaCurrent));
+        // noFill();
         stroke(color(c, 360, 360, alphaCurrent));
       } else {
         // fill(c, 360, map(heightpercentage, 0, 100, 0, 360));
@@ -340,6 +336,6 @@ void keyPressed() {
 
 void mouseWheel(MouseEvent event) {
   float scrollAmount = event.getCount();
-  zEnable += scrollAmount;
+  zEnable += scrollAmount / 10;
   println(zEnable);
 }
