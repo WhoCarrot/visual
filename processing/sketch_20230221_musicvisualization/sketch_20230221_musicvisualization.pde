@@ -15,18 +15,18 @@ boolean fill = true;
 int scl;
 int cols = 16;
 int rows = 32;
-int multiplier = 2;
 int fftSize = 1024;
-String songname = "../../data/theme11.mp3";
+float multiplier = 1;
+String songname = "../../data/theme42.mp3";
 float skip = -1;
-float maxwidth = 64;
+float maxwidth = 1024;
 float[][] terrain;
 float maxheight;
 float cMod = 0.0;
 float desiredcMod = 0.0;
 
-float fillFramerate = 144;
-float noFillFramerate = 144;
+float fillFramerate = 30;
+float noFillFramerate = fillFramerate;
 
 float backgroundHue = 0.0;
 float backgroundBrightness = 0.0;
@@ -35,21 +35,26 @@ float backgroundChangePercentage = 50;
 float backgroundChangeMin = 0;
 float backgroundChangeMax = 100;
 float backgroundIntensityDecay = 1;
-float dropheightpercentage = 100;
+float dropheightpercentage = 190;
 
 float lowHeightTicker = 0;
 float lowHeightTime = 30;
 float lowHeightThreshold = 10;
 
-float alphaDecay = .33;
+float alphaDecay = .5;
 float alphaMin = -270;
 float alphaMax = 360;
 float alphaCurrent = alphaMin;
 
 float zEnableMin = -0.33;
 float zEnableMax = 1;
-float zEnable = zEnableMax;
-float zEnableSpeed = 0.001;
+// float zEnable = -1;
+// float zEnable = -.33;
+// float zEnable = .33;
+float zEnable = 0;
+
+float zEnableSpeed = 0;
+boolean playing = true;
 
 // PostFX fx;
 PostFXSupervisor supervisor;
@@ -57,6 +62,7 @@ Pass[] fillPasses;
 Pass[] noFillPasses;
 
 void setup () {
+  // maxwidth = width / 2;
   // cam = new PeasyCam(this, 100);
   // cam.setMinimumDistance(50);
   // cam.setMaximumDistance(500);
@@ -69,38 +75,42 @@ void setup () {
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
   fillPasses = new Pass[] {
-    new PixelatePass(this, 400f),
+    new BrightPass(this, 0.7f),
+    // new PixelatePass(this, 400f),
+    // new ChromaticAberrationPass(this),
+    // new SobelPass(this),
     new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.4, 40, 40),
-    // new BloomPass(this, 0.1, 300, 300),
-    new VignettePass(this, 0.8, 0.3),
-    
+    new BloomPass(this, 0.2, 80, 40),
+    // new SaturationVibrancePass(this),
+    new VignettePass(this, .8, .3),
   };
 
-  // noFillPasses = fillPasses;
+  noFillPasses = fillPasses;
 
-  noFillPasses = new Pass[] {
-    new PixelatePass(this, 400f),
-    new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.4, 40, 40),
-    // new BloomPass(this, 0.1, 300, 300),
-    new VignettePass(this, 0.8, 0.3),
-  };
+  // noFillPasses = new Pass[] {
+  //   new PixelatePass(this, 400f),
+  //   new ChromaticAberrationPass(this),
+  //   new BloomPass(this, 0.4, 40, 40),
+  //   // new BloomPass(this, 0.1, 300, 300),
+  //   new VignettePass(this, 0.8, 0.3),
+  // };
 
-  // size(1280, 720, P3D);
-  fullScreen(P3D, 1);
+  size(720, 1280, P3D);
+  
+  // surface.setLocation(100, 100);
+  // fullScreen(P3D, 2);
   strokeJoin(ROUND);
   strokeCap(ROUND);
-  colorMode(HSB, 360);
+  colorMode(HSB, 360, 360, 360, 360);
   smooth();
   frameRate(fillFramerate);
   noStroke();
 
-  scl = width / cols;
+  scl = width / cols / 2;
   
   terrain = new float[cols][rows];
 
-  // jingle.cue(120500);
+  // jingle.cue(40000);
 }
 
 void setFill(boolean fillValue) {
@@ -123,6 +133,8 @@ void setFill(boolean fillValue) {
 
 // boolean hardcodedDrop = false;
 void draw () {
+  if (!playing) return;
+
   // if (jingle.position() >= 132350 && !hardcodedDrop) {
   //   setFill(false);
   //   hardcodedDrop = true;
@@ -131,7 +143,8 @@ void draw () {
   noStroke();
   setTitle();
 
-  background(backgroundHue, backgroundSaturation, backgroundBrightness);
+  // background(color(360, 360, 0, .0001));
+  // background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
   fft.forward(jingle.mix);
 
   float maxfromband = 0;
@@ -154,9 +167,10 @@ void draw () {
   }
   
   
-  translate(width/2, height/2, map(jingle.position(), 0, jingle.length(), -1000, -500));
-  // translate(width/2, height/2, -2000);
+  // translate(width/2, height/2, map(jingle.position(), 0, jingle.length(), -1000, -500));
+  translate(width/2, height/2, -5000);
   rotateX(PI/2);
+  // rotateY(PI/2);
   
   float heightpercentage = maxfromband * 100 / maxheight;
   float c = map(heightpercentage, 0, 100, 0, 40);
@@ -206,21 +220,20 @@ void draw () {
     backgroundBrightness -= map(backgroundBrightness, 0, 360, backgroundIntensityDecay, backgroundIntensityDecay*2);
   }
 
-  if (fill) {
-    zEnable += zEnableSpeed;
-  } else {
-    zEnable -= zEnableSpeed;
-  }
-  zEnable = min(max(zEnable, zEnableMin), zEnableMax);
+  // if (fill) {
+  //   zEnable += zEnableSpeed;
+  // } else {
+  //   zEnable -= zEnableSpeed;
+  // }
+  // zEnable = min(max(zEnable, zEnableMin), zEnableMax);
 
   supervisor.render();
-
-
-
   for (Pass pass : fill ? fillPasses : noFillPasses) {
     supervisor.pass(pass);
   }
   supervisor.compose();
+
+  // scale(2);
 
   // saveFrame("exports/image" + frameCount + ".jpg");
 }
@@ -248,6 +261,7 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
         alphaCurrent = max(min(alphaCurrent, alphaMax, 360), alphaMin, 0);
 
         fill(color(c, 360, 360, alphaCurrent));
+        // noFill();
         stroke(color(c, 360, 360, alphaCurrent));
       } else {
         // fill(c, 360, map(heightpercentage, 0, 100, 0, 360));
@@ -318,8 +332,28 @@ void setMaximumHeight(String name) {
   jingle.close();
 }
 
+
 void keyPressed() {
   if (key == 'f' || key == 'F') {
     setFill(!fill);
+  } else if (key == ' ') {
+    if (playing) { 
+      jingle.pause();
+    } else {
+      jingle.play();
+    }
+    playing = !playing;
+  } else if (key == CODED) {
+    if (keyCode == RIGHT) {
+      jingle.cue(jingle.position() + 10000);
+    } else if (keyCode == LEFT) {
+      jingle.cue(jingle.position() - 10000);
+    }
   }
+}
+
+void mouseWheel(MouseEvent event) {
+  float scrollAmount = event.getCount();
+  zEnable += scrollAmount / 10;
+  println(zEnable);
 }
