@@ -13,13 +13,13 @@ PeasyCam    cam;
 boolean fill = true;
 
 int scl;
-int cols = 16;
-int rows = 32;
+int cols = 2;
+int rows = 16;
 int fftSize = 1024;
-float multiplier = 1;
-String songname = "../../data/theme42.mp3";
+float multiplier = 2;
+String songname = "../../data/theme31.mp3";
 float skip = -1;
-float maxwidth = 1024;
+float maxwidth = 512;
 float[][] terrain;
 float maxheight;
 float cMod = 0.0;
@@ -75,12 +75,15 @@ void setup () {
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
   fillPasses = new Pass[] {
-    new BrightPass(this, 0.7f),
-    // new PixelatePass(this, 400f),
-    // new ChromaticAberrationPass(this),
     // new SobelPass(this),
+    new BrightPass(this, 0.4f),
+    // new PixelatePass(this, 300f),
     new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.2, 80, 40),
+    // new SobelPass(this),
+    new SobelPass(this),
+    // new SobelPass(this),
+    // new ChromaticAberrationPass(this),
+    new BloomPass(this, 0.2, 20, 40),
     // new SaturationVibrancePass(this),
     new VignettePass(this, .8, .3),
   };
@@ -94,7 +97,7 @@ void setup () {
   //   // new BloomPass(this, 0.1, 300, 300),
   //   new VignettePass(this, 0.8, 0.3),
   // };
-
+// 
   size(720, 1280, P3D);
   
   // surface.setLocation(100, 100);
@@ -171,6 +174,7 @@ void draw () {
   translate(width/2, height/2, -5000);
   rotateX(PI/2);
   // rotateY(PI/2);
+  scale(.75);
   
   float heightpercentage = maxfromband * 100 / maxheight;
   float c = map(heightpercentage, 0, 100, 0, 40);
@@ -232,6 +236,7 @@ void draw () {
     supervisor.pass(pass);
   }
   supervisor.compose();
+
 
   // scale(2);
 
