@@ -75,9 +75,10 @@ void setup () {
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
   fillPasses = new Pass[] {
+    new BrightPass(this, 0.7),
     // new SobelPass(this),
-    new BrightPass(this, 0.4f),
-    // new PixelatePass(this, 300f),
+    new PixelatePass(this, 400f),
+    // new SobelPass(this),
     new ChromaticAberrationPass(this),
     // new SobelPass(this),
     new SobelPass(this),
@@ -147,7 +148,7 @@ void draw () {
   setTitle();
 
   // background(color(360, 360, 0, .0001));
-  // background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
+  background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
   fft.forward(jingle.mix);
 
   float maxfromband = 0;
@@ -236,9 +237,6 @@ void draw () {
     supervisor.pass(pass);
   }
   supervisor.compose();
-
-
-  // scale(2);
 
   // saveFrame("exports/image" + frameCount + ".jpg");
 }
