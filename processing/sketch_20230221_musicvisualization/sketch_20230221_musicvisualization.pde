@@ -166,7 +166,7 @@ void draw () {
   setTitle();
 
   // background(color(360, 360, 0, .0001));
-  // background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
+  background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
   fft.forward(jingle.mix);
 
   float maxfromband = 0;
@@ -255,9 +255,6 @@ void draw () {
     supervisor.pass(pass);
   }
   supervisor.compose();
-
-
-  // scale(2);
 
   // saveFrame("exports/image" + frameCount + ".jpg");
 }
