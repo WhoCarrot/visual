@@ -13,13 +13,13 @@ PeasyCam    cam;
 boolean fill = true;
 
 int scl;
-int cols = 2;
-int rows = 16;
-int fftSize = 1024;
-float multiplier = 2;
-String songname = "../../data/theme31.mp3";
+int cols = 16;
+int rows = 32;
+int fftSize = 8192/2;
+float multiplier = 1;
+String songname = "../../data/theme47.mp3";
 float skip = -1;
-float maxwidth = 512;
+float maxwidth = 1024;
 float[][] terrain;
 float maxheight;
 float cMod = 0.0;
@@ -75,20 +75,37 @@ void setup () {
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
   fillPasses = new Pass[] {
-    // new SobelPass(this),
-    new BrightPass(this, 0.4f),
-    // new PixelatePass(this, 300f),
-    new ChromaticAberrationPass(this),
-    // new SobelPass(this),
     new SobelPass(this),
+    new BrightPass(this, 0.2f),
+    new PixelatePass(this, 600f),
+    new ChromaticAberrationPass(this),
+    // new ChromaticAberrationPass(this),
+    // new BloomPass(this, 0.2, 20, 40),
+    // new SaturationVibrancePass(this),
+    // new SobelPass(this),
+    // new SobelPass(this),
     // new SobelPass(this),
     // new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.2, 20, 40),
+    // new BloomPass(this, 0.2, 20, 40),
     // new SaturationVibrancePass(this),
     new VignettePass(this, .8, .3),
   };
 
-  noFillPasses = fillPasses;
+  // noFillPasses = new Pass[] {
+  //   new SobelPass(this),
+  //   new BrightPass(this, 0.7f),
+  //   // new PixelatePass(this, 400f),
+  //   new ChromaticAberrationPass(this),
+  //   // new SobelPass(this),
+  //   // new SobelPass(this),
+  //   // new SobelPass(this),
+  //   // new ChromaticAberrationPass(this),
+  //   // new BloomPass(this, 0.2, 20, 40),
+  //   // new SaturationVibrancePass(this),
+  //   new VignettePass(this, .8, .3),
+  // };
+
+  // noFillPasses = fillPasses;
 
   // noFillPasses = new Pass[] {
   //   new PixelatePass(this, 400f),
@@ -98,10 +115,10 @@ void setup () {
   //   new VignettePass(this, 0.8, 0.3),
   // };
 // 
-  size(720, 1280, P3D);
+  // size(720, 1280, P3D);
+  fullScreen(P3D);
   
   // surface.setLocation(100, 100);
-  // fullScreen(P3D, 2);
   strokeJoin(ROUND);
   strokeCap(ROUND);
   colorMode(HSB, 360, 360, 360, 360);
@@ -112,6 +129,8 @@ void setup () {
   scl = width / cols / 2;
   
   terrain = new float[cols][rows];
+
+  println(fft.specSize());
 
   // jingle.cue(40000);
 }
@@ -152,7 +171,7 @@ void draw () {
 
   float maxfromband = 0;
   // Loop through the entire band
-  for(int i = 0; i < fft.specSize() / 2; i++)
+  for(int i = 0; i < fft.specSize(); i++)
   {
     // todo scale cols to specsize
     if (i >= cols) {
@@ -250,7 +269,8 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       float h = terrain[x][y];
       //float c = map(h, 0, maxheight, colorMin, colorMax);
       float c = map(h, 0, maxheight, 0, 360);
-      float sw = map(heightpercentage, 0, 100, -maxwidth/8, maxwidth)-pow(y,2);
+      // float sw = map(heightpercentage, 0, 100, -maxwidth/8, maxwidth)-pow(y,2);
+      float sw = map(heightpercentage, 0, 100, -maxwidth/8, maxwidth)+y;
       if (sw < 1) sw = 1;
       strokeWeight(sw);
       if (fill) {
@@ -281,6 +301,8 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       
       vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable);
       vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable);
+      // vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]*zEnable);
+      // vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]*zEnable);
 
       // if (fill) {
       // } else {
