@@ -19,7 +19,7 @@ int fftSize = 8192/2;
 float multiplier = 1;
 String songname = "../../data/theme47.mp3";
 float skip = -1;
-float maxwidth = 256;
+float maxwidth = 400;
 float[][] terrain;
 float maxheight;
 float cMod = 0.0;
@@ -92,11 +92,11 @@ void setup () {
     new ChromaticAberrationPass(this),
     // new ChromaticAberrationPass(this),
     // new ChromaticAberrationPass(this),
-    new PixelatePass(this, 100f),
-    new PixelatePass(this, 150f),
-    new PixelatePass(this, 200f),
+    // new PixelatePass(this, 100f),
+    // new PixelatePass(this, 150f),
+    // new PixelatePass(this, 200f),
     new SobelPass(this),
-    new PixelatePass(this, 200f),
+    // new PixelatePass(this, 200f),
     // new BrightPass(this, 0.2f),
     // new SobelPass(this),
     new BloomPass(this, 0.2, 20, 100),
@@ -194,7 +194,7 @@ void draw () {
   setTitle();
 
   // background(color(360, 360, 0, .0001));
-  background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
+  // background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
   fft.forward(jingle.mix);
 
   float maxfromband = 0;
