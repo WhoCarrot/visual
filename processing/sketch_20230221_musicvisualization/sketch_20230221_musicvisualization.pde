@@ -19,13 +19,13 @@ int fftSize = 8192/2;
 float multiplier = 1;
 String songname = "../../data/theme47.mp3";
 float skip = -1;
-float maxwidth = 1024;
+float maxwidth = 256;
 float[][] terrain;
 float maxheight;
 float cMod = 0.0;
 float desiredcMod = 0.0;
 
-float fillFramerate = 30;
+float fillFramerate = 24;
 float noFillFramerate = fillFramerate;
 
 float backgroundHue = 0.0;
@@ -51,7 +51,7 @@ float zEnableMax = 1;
 // float zEnable = -1;
 // float zEnable = -.33;
 // float zEnable = .33;
-float zEnable = 0;
+float zEnable = -0.20000497;
 
 float zEnableSpeed = 0;
 boolean playing = true;
@@ -75,10 +75,37 @@ void setup () {
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
   fillPasses = new Pass[] {
-    new SobelPass(this),
-    new BrightPass(this, 0.2f),
-    new PixelatePass(this, 600f),
+    // new SobelPass(this),his),
+    // new ChromaticAberrationPass(this),
+    // new ChromaticAberrationPass(this),
+    // new SobelPass(this),
+    // new PixelatePass(this, 1000f),
+    // new SobelPass(this),
+    // new PixelatePass(this, 300f),
+    // new SobelPass(this),
+    // // new SobelPass(this),
+    // new PixelatePass(this, 100f),
+    // new SobelPass(this),
+    // new PixelatePass(this, 400f),
+    // // new SobelPass(this),
     new ChromaticAberrationPass(this),
+    new ChromaticAberrationPass(this),
+    // new ChromaticAberrationPass(this),
+    // new ChromaticAberrationPass(this),
+    new PixelatePass(this, 100f),
+    new PixelatePass(this, 150f),
+    new PixelatePass(this, 200f),
+    new SobelPass(this),
+    new PixelatePass(this, 200f),
+    // new BrightPass(this, 0.2f),
+    // new SobelPass(this),
+    new BloomPass(this, 0.2, 20, 100),
+    // new PixelatePass(this, 800f),
+    // new SobelPass(this),
+    // new BloomPass(this, 0.2, 20, 5),
+    // new SobelPass(this),
+    // new BloomPass(this, 0.3, 100, 240),
+    // new SobelPass(this),
     // new ChromaticAberrationPass(this),
     // new BloomPass(this, 0.2, 20, 40),
     // new SaturationVibrancePass(this),
@@ -117,6 +144,7 @@ void setup () {
 // 
   // size(720, 1280, P3D);
   fullScreen(P3D);
+  // size(1080, 1350, P3D);
   
   // surface.setLocation(100, 100);
   strokeJoin(ROUND);
@@ -166,7 +194,7 @@ void draw () {
   setTitle();
 
   // background(color(360, 360, 0, .0001));
-  // background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
+  background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
   fft.forward(jingle.mix);
 
   float maxfromband = 0;
@@ -199,7 +227,7 @@ void draw () {
   float c = map(heightpercentage, 0, 100, 0, 40);
   //float xPow = map(jingle.position(), 0, jingle.length(), 6, 10);
   //float xPow = map(jingle.position(), 0, jingle.length(), -2, 10);
-  float xPow = 0;
+  float xPow = 2;
   float yPow = 2;
 
   // frameRate(map(heightpercentage, 0, 100, 60, 144));
@@ -229,10 +257,10 @@ void draw () {
     }
   }
   
-  strip(c+cMod, 360-cMod, 1, 1, 1, xPow, yPow, heightpercentage);
-  strip(c+cMod, 360-cMod, -1, 1, 1, xPow, yPow, heightpercentage);
-  strip(c+cMod, 360-cMod, 1, 1, -1, xPow, yPow, heightpercentage);
-  strip(c+cMod, 360-cMod, -1, 1, -1, xPow, yPow, heightpercentage);
+  strip(c+cMod, 360-cMod, .4, .1, -1, xPow, yPow, heightpercentage);
+  strip(c+cMod, 360-cMod, -.4, .1, -1, xPow, yPow, heightpercentage);
+  strip(c+cMod, 360-cMod, .4, .1, .1, xPow, yPow, heightpercentage);
+  strip(c+cMod, 360-cMod, -.4, .1, .1, xPow, yPow, heightpercentage);
 
   if (heightpercentage > backgroundChangePercentage) {
     backgroundHue = c+cMod;
