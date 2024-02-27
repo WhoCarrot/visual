@@ -243,7 +243,7 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       float h = terrain[x][y];
       //float c = map(h, 0, maxheight, colorMin, colorMax);
       float c = map(h, 0, maxheight, 0, 360);
-      float sw = map(heightpercentage, 0, 100, -maxwidth/8, maxwidth)-pow(y,2) : 1;
+      float sw = map(heightpercentage, 0, 100, -maxwidth/8, maxwidth)-pow(y,2);
       if (sw < 1) sw = 1;
       strokeWeight(sw);
       if (fill) {
