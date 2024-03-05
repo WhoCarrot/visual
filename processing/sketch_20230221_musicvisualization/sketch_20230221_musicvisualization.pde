@@ -48,7 +48,7 @@ float alphaCurrent = alphaMin;
 
 float zEnableMin = -0.33;
 float zEnableMax = 1;
-float zEnable = zEnableMax;
+float zEnable = 0;
 float zEnableSpeed = 0.001;
 
 // PostFX fx;
@@ -72,7 +72,7 @@ void setup () {
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
   fillPasses = new Pass[] {
-    new BrightPass(this, 0.5f),
+    new BrightPass(this, 0.8f),
     new PixelatePass(this, 400f),
     // new SobelPass(this),
     // new PixelatePass(this, 400f),
@@ -84,7 +84,7 @@ void setup () {
     // new PixelatePass(this, 800f),
     // new BrightPass(this, 0.1f),
     new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.2, 120, 40),
+    new BloomPass(this, 0.2, 120, 20),
     // new BloomPass(this, 0.1, 300, 300),
     new VignettePass(this, 0.8, 0.3),
     
