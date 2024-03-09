@@ -71,11 +71,12 @@ void setup () {
   fillPasses = new Pass[] {
     new BrightPass(this, 0.5f),
     new PixelatePass(this, 400f),
+    // new SobelPass(this),
     // new ChromaticAberrationPass(this),
     // new PixelatePass(this, 800f),
     // new BrightPass(this, 0.1f),
     new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.2, 80, 40),
+    new BloomPass(this, 0.2, 80, 200),
     // new BloomPass(this, 0.1, 300, 300),
     new VignettePass(this, 0.8, 0.3),
     
@@ -92,7 +93,7 @@ void setup () {
   // };
 
   // size(1280, 720, P3D);
-  fullScreen(P3D, 2);
+  fullScreen(P3D);
   strokeJoin(ROUND);
   strokeCap(ROUND);
   colorMode(HSB, 360);
@@ -323,5 +324,17 @@ void setMaximumHeight(String name) {
 void keyPressed() {
   if (key == 'f' || key == 'F') {
     setFill(!fill);
+  } else if (key == CODED) {
+    if (keyCode == RIGHT) {
+      jingle.cue(jingle.position() + 10000);
+    } else if (keyCode == LEFT) {
+      jingle.cue(jingle.position() - 10000);
+    }
   }
+}
+
+void mouseWheel(MouseEvent event) {
+  float scrollAmount = event.getCount();
+  zEnable += scrollAmount;
+  println(zEnable);
 }
