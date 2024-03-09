@@ -17,9 +17,9 @@ int cols = 16;
 int rows = 32;
 int fftSize = 8192/2;
 float multiplier = 1;
-String songname = "../../data/theme49.mp3";
+String songname = "../../data/theme42.mp3";
 float skip = -1;
-float maxwidth = 750;
+float maxwidth = 1024;
 float[][] terrain;
 float maxheight;
 float cMod = 0.0;
@@ -52,7 +52,7 @@ float zEnableMax = 1;
 // float zEnable = -.33;
 // float zEnable = .33;
 // float zEnable = -0.20000497;
-float zEnable = 0;
+float zEnable = -.4;
 
 float zEnableSpeed = 0;
 boolean playing = true;
@@ -76,46 +76,11 @@ void setup () {
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
   fillPasses = new Pass[] {
-    // new SobelPass(this),his),
-    // new ChromaticAberrationPass(this),
-    // new ChromaticAberrationPass(this),
-    // new SobelPass(this),
-    // new PixelatePass(this, 1000f),
-    // new SobelPass(this),
-    // new PixelatePass(this, 300f),
-    // new SobelPass(this),
-    // // new SobelPass(this),
-    // new PixelatePass(this, 100f),
-    // new SobelPass(this),
-    // new PixelatePass(this, 400f),
-    // // new SobelPass(this),
-    // new ChromaticAberrationPass(this),
-    new ChromaticAberrationPass(this),
-    // new ChromaticAberrationPass(this),
-    // new ChromaticAberrationPass(this),
-    // new PixelatePass(this, 100f),
-    // new PixelatePass(this, 150f),
-    // new PixelatePass(this, 200f),
+    new BrightPass(this, 0.1f),
     new SobelPass(this),
-    // new PixelatePass(this, 800f),
-    new BrightPass(this, 0.2f),
-    // new SobelPass(this),
-    new BloomPass(this, 0.2, 20, 20),
-    // new PixelatePass(this, 800f),
-    // new SobelPass(this),
-    // new BloomPass(this, 0.2, 20, 5),
-    // new SobelPass(this),
-    // new BloomPass(this, 0.3, 100, 240),
-    // new SobelPass(this),
-    // new ChromaticAberrationPass(this),
-    // new BloomPass(this, 0.2, 20, 40),
-    // new SaturationVibrancePass(this),
-    // new SobelPass(this),
-    // new SobelPass(this),
-    // new SobelPass(this),
-    // new ChromaticAberrationPass(this),
-    // new BloomPass(this, 0.2, 20, 40),
-    // new SaturationVibrancePass(this),
+    new ChromaticAberrationPass(this),
+    new PixelatePass(this, 400f),
+    new SobelPass(this),
     new VignettePass(this, .8, .3),
   };
 
