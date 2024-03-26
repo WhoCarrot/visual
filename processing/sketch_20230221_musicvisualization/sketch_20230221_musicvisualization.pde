@@ -13,13 +13,13 @@ PeasyCam    cam;
 boolean fill = true;
 
 int scl;
-int cols = 2;
+int cols = 3;
 int rows = 32;
 int fftSize = 1024;
 float multiplier = 16;
-String songname = "../../data/theme40.mp3";
+String songname = "../../data/theme38.mp3";
 float skip = -1;
-float maxwidth = 2048;
+float maxwidth = 3000;
 float[][] terrain;
 float maxheight;
 float cMod = 0.0;
@@ -205,10 +205,12 @@ void draw () {
     }
   }
   
-  strip(c+cMod, 120-cMod, .3, 1, 1, xPow, yPow, heightpercentage, .33);
-  strip(c+cMod, 120-cMod, -.3, 1, 1, xPow, yPow, heightpercentage, .33);
-  strip(c+cMod, 220-cMod, 1, 1, -1, xPow, yPow, heightpercentage, .1);
-  strip(c+cMod, 220-cMod, -1, 1, -1, xPow, yPow, heightpercentage, .1);
+  strip(c+cMod, 60-cMod, .3, 1, 1, xPow, yPow, heightpercentage, .2);
+  strip(c+cMod, 120-cMod, -.3, 1, 1, xPow, yPow, heightpercentage, .2);
+  strip(c+cMod, 180-cMod, 1, 1, -1, xPow, yPow, heightpercentage, .2);
+  strip(c+cMod, 240-cMod, -1, 1, -1, xPow, yPow, heightpercentage, .2);
+  strip(c+cMod, 300-cMod, 4, -1, -.1, xPow, yPow, heightpercentage, .2);
+  strip(c+cMod, 360-cMod, -4, -1, -.1, xPow, yPow, heightpercentage, .2);
 
   if (heightpercentage > backgroundChangePercentage) {
     backgroundHue = c+cMod;
@@ -271,8 +273,8 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       float xSine = tan(map(y, 0, rows-1, 0, HALF_PI));
 
       
-      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable-900);
-      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable-900);
+      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable-height/2-600);
+      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable-height/2-600);
 
       // vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]-zEnable*pow(x,xPow)*pow(y,yPow)-300);
       // vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]-zEnable*pow(x,xPow)*pow(y,yPow)-300);
