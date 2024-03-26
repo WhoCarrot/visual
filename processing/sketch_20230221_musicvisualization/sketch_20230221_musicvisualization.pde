@@ -13,13 +13,13 @@ PeasyCam    cam;
 boolean fill = true;
 
 int scl;
-int cols = 16;
+int cols = 3;
 int rows = 32;
-int fftSize = 8192/2;
-float multiplier = 1;
-String songname = "../../data/theme42.mp3";
+int fftSize = 1024;
+float multiplier = 32;
+String songname = "../../data/theme50.mp3";
 float skip = -1;
-float maxwidth = 1024;
+float maxwidth = 500;
 float[][] terrain;
 float maxheight;
 float cMod = 0.0;
@@ -41,21 +41,16 @@ float lowHeightTicker = 0;
 float lowHeightTime = 30;
 float lowHeightThreshold = 10;
 
-float alphaDecay = .5;
+float alphaDecay = .33;
 float alphaMin = -270;
 float alphaMax = 360;
 float alphaCurrent = alphaMin;
 
-float zEnableMin = -0.33;
-float zEnableMax = 1;
-// float zEnable = -1;
-// float zEnable = -.33;
-// float zEnable = .33;
-// float zEnable = -0.20000497;
-float zEnable = -.4;
-
-float zEnableSpeed = 0;
-boolean playing = true;
+float zEnableMin = -3;
+float zEnableMax = -3;
+// float zEnable = -.20;
+float zEnable = .6;
+float zEnableSpeed = 0.001;
 
 // PostFX fx;
 PostFXSupervisor supervisor;
@@ -63,7 +58,6 @@ Pass[] fillPasses;
 Pass[] noFillPasses;
 
 void setup () {
-  // maxwidth = width / 2;
   // cam = new PeasyCam(this, 100);
   // cam.setMinimumDistance(50);
   // cam.setMaximumDistance(500);
@@ -75,30 +69,25 @@ void setup () {
   fft = new FFT( jingle.bufferSize(), jingle.sampleRate() );
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
-  fillPasses = new Pass[] {
-    new BrightPass(this, 0.1f),
-    new SobelPass(this),
-    new ChromaticAberrationPass(this),
-    new PixelatePass(this, 400f),
-    new SobelPass(this),
-    new VignettePass(this, .8, .3),
+    fillPasses = new Pass[] {
+
+      
+    new BrightPass(this, 0.4f),
+
+
+    // new ChromaticAberrationPass(this),
+    // new SobelPass(this),
+    // new PixelatePass(this, 400f),
+    // new BrightPass(this, 0.1f),
+    // new ChromaticAberrationPass(this),
+    // new ChromaticAberrationPass(this),
+    new BloomPass(this, 0.2, 300, 5),
+    // new BloomPass(this, 0.1, 300, 300),
+    new VignettePass(this, 1.2, 0.3),
+    
   };
 
-  // noFillPasses = new Pass[] {
-  //   new SobelPass(this),
-  //   new BrightPass(this, 0.7f),
-  //   // new PixelatePass(this, 400f),
-  //   new ChromaticAberrationPass(this),
-  //   // new SobelPass(this),
-  //   // new SobelPass(this),
-  //   // new SobelPass(this),
-  //   // new ChromaticAberrationPass(this),
-  //   // new BloomPass(this, 0.2, 20, 40),
-  //   // new SaturationVibrancePass(this),
-  //   new VignettePass(this, .8, .3),
-  // };
-
-  // noFillPasses = fillPasses;
+  noFillPasses = fillPasses;
 
   // noFillPasses = new Pass[] {
   //   new PixelatePass(this, 400f),
@@ -107,26 +96,23 @@ void setup () {
   //   // new BloomPass(this, 0.1, 300, 300),
   //   new VignettePass(this, 0.8, 0.3),
   // };
-// 
-  // size(720, 1280, P3D);
-  fullScreen(P3D);
-  // size(1080, 1350, P3D);
-  
-  // surface.setLocation(100, 100);
+
+  size(720, 1280, P3D);
+  // fullScreen(P3D);
   strokeJoin(ROUND);
   strokeCap(ROUND);
-  colorMode(HSB, 360, 360, 360, 360);
+  colorMode(HSB, 360);
   smooth();
   frameRate(fillFramerate);
   noStroke();
 
-  scl = width / cols / 2;
+  // maxwidth = width / 10;
+
+  scl = width / cols;
   
   terrain = new float[cols][rows];
 
-  println(fft.specSize());
-
-  // jingle.cue(40000);
+  // jingle.cue(116234);
 }
 
 void setFill(boolean fillValue) {
@@ -149,8 +135,6 @@ void setFill(boolean fillValue) {
 
 // boolean hardcodedDrop = false;
 void draw () {
-  if (!playing) return;
-
   // if (jingle.position() >= 132350 && !hardcodedDrop) {
   //   setFill(false);
   //   hardcodedDrop = true;
@@ -159,13 +143,12 @@ void draw () {
   noStroke();
   setTitle();
 
-  // background(color(360, 360, 0, .0001));
   // background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
   fft.forward(jingle.mix);
 
   float maxfromband = 0;
   // Loop through the entire band
-  for(int i = 0; i < fft.specSize(); i++)
+  for(int i = 0; i < fft.specSize() / 2; i++)
   {
     // todo scale cols to specsize
     if (i >= cols) {
@@ -183,17 +166,15 @@ void draw () {
   }
   
   
-  // translate(width/2, height/2, map(jingle.position(), 0, jingle.length(), -1000, -500));
-  translate(width/2, height/2, -5000);
+  translate(width/2, height/2, map(jingle.position(), 0, jingle.length(), -1000, -500));
+  // translate(width/2, height/2, -2000);
   rotateX(PI/2);
-  // rotateY(PI/2);
-  scale(.75);
   
   float heightpercentage = maxfromband * 100 / maxheight;
   float c = map(heightpercentage, 0, 100, 0, 40);
   //float xPow = map(jingle.position(), 0, jingle.length(), 6, 10);
   //float xPow = map(jingle.position(), 0, jingle.length(), -2, 10);
-  float xPow = 2;
+  float xPow = 0;
   float yPow = 2;
 
   // frameRate(map(heightpercentage, 0, 100, 60, 144));
@@ -223,10 +204,10 @@ void draw () {
     }
   }
   
-  strip(c+cMod, 360-cMod, .4, .1, -1, xPow, yPow, heightpercentage);
-  strip(c+cMod, 360-cMod, -.4, .1, -1, xPow, yPow, heightpercentage);
-  strip(c+cMod, 360-cMod, .4, .1, .1, xPow, yPow, heightpercentage);
-  strip(c+cMod, 360-cMod, -.4, .1, .1, xPow, yPow, heightpercentage);
+  strip(c+cMod, 120-cMod, .3, 1, 1, xPow, yPow, heightpercentage, .33);
+  strip(c+cMod, 120-cMod, -.3, 1, 1, xPow, yPow, heightpercentage, .33);
+  strip(c+cMod, 220-cMod, 1, 1, -1, xPow, yPow, heightpercentage, .1);
+  strip(c+cMod, 220-cMod, -1, 1, -1, xPow, yPow, heightpercentage, .1);
 
   if (heightpercentage > backgroundChangePercentage) {
     backgroundHue = c+cMod;
@@ -245,6 +226,9 @@ void draw () {
   // zEnable = min(max(zEnable, zEnableMin), zEnableMax);
 
   supervisor.render();
+
+
+
   for (Pass pass : fill ? fillPasses : noFillPasses) {
     supervisor.pass(pass);
   }
@@ -253,22 +237,18 @@ void draw () {
   // saveFrame("exports/image" + frameCount + ".jpg");
 }
 
-void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, float xPow, float yPow, float heightpercentage) {
+void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, float xPow, float yPow, float heightpercentage, float alphaMod) {
   for (int y = 0; y < rows-1; y++) {
     beginShape(TRIANGLE_STRIP);
     for (int x = 0; x < cols; x++) {
       float h = terrain[x][y];
       //float c = map(h, 0, maxheight, colorMin, colorMax);
       float c = map(h, 0, maxheight, 0, 360);
-      // float sw = map(heightpercentage, 0, 100, -maxwidth/8, maxwidth)-pow(y,2);
-      float sw = map(heightpercentage, 0, 100, -maxwidth/8, maxwidth)+y;
+      float sw = map(heightpercentage, 0, 100, -maxwidth/8, maxwidth)-pow(y,2);
       if (sw < 1) sw = 1;
       strokeWeight(sw);
       if (fill) {
-
-
-
-        float alphaValue = map(y, 0, rows, alphaMax, alphaMin) / 2 + map(heightpercentage, 0, 100, alphaMin, alphaMax) / 2;
+        float alphaValue = map(y, 0, rows, alphaMax, alphaMin) + map(heightpercentage, 0, 100, alphaMin, alphaMax);
         if (alphaValue > alphaCurrent) {
           alphaCurrent = alphaValue;
         } else {
@@ -276,9 +256,9 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
         }
         alphaCurrent = max(min(alphaCurrent, alphaMax, 360), alphaMin, 0);
 
-        fill(color(c, 360, 360, alphaCurrent));
+        fill(color(c, 360, 360, alphaCurrent * alphaMod));
         // noFill();
-        stroke(color(c, 360, 360, alphaCurrent));
+        stroke(color(c, 360, 360, alphaCurrent * alphaMod));
       } else {
         // fill(c, 360, map(heightpercentage, 0, 100, 0, 360));
         stroke(c, 360, 360);
@@ -290,10 +270,11 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       float xSine = tan(map(y, 0, rows-1, 0, HALF_PI));
 
       
-      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable);
-      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable);
-      // vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]*zEnable);
-      // vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]*zEnable);
+      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable-900);
+      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable-900);
+
+      // vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]-zEnable*pow(x,xPow)*pow(y,yPow)-300);
+      // vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]-zEnable*pow(x,xPow)*pow(y,yPow)-300);
 
       // if (fill) {
       // } else {
@@ -350,17 +331,9 @@ void setMaximumHeight(String name) {
   jingle.close();
 }
 
-
 void keyPressed() {
   if (key == 'f' || key == 'F') {
     setFill(!fill);
-  } else if (key == ' ') {
-    if (playing) { 
-      jingle.pause();
-    } else {
-      jingle.play();
-    }
-    playing = !playing;
   } else if (key == CODED) {
     if (keyCode == RIGHT) {
       jingle.cue(jingle.position() + 10000);
