@@ -13,13 +13,13 @@ PeasyCam    cam;
 boolean fill = true;
 
 int scl;
-int cols = 3;
+int cols = 2;
 int rows = 32;
 int fftSize = 1024;
-float multiplier = 32;
-String songname = "../../data/theme50.mp3";
+float multiplier = 16;
+String songname = "../../data/theme40.mp3";
 float skip = -1;
-float maxwidth = 500;
+float maxwidth = 2048;
 float[][] terrain;
 float maxheight;
 float cMod = 0.0;
@@ -72,7 +72,7 @@ void setup () {
     fillPasses = new Pass[] {
 
       
-    new BrightPass(this, 0.4f),
+    new BrightPass(this, 0.56f),
 
 
     // new ChromaticAberrationPass(this),
@@ -81,9 +81,10 @@ void setup () {
     // new BrightPass(this, 0.1f),
     // new ChromaticAberrationPass(this),
     // new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.2, 300, 5),
+    new BloomPass(this, 0.1, 300, 5),
     // new BloomPass(this, 0.1, 300, 300),
-    new VignettePass(this, 1.2, 0.3),
+    // new SobelPass(this),
+    new VignettePass(this, 0.3, 0.3),
     
   };
 
@@ -334,6 +335,11 @@ void setMaximumHeight(String name) {
 void keyPressed() {
   if (key == 'f' || key == 'F') {
     setFill(!fill);
+  } else if (key == ' ') {
+    if (jingle.isPlaying()) jingle.pause();
+    else jingle.play();
+  } else if (key == 'c' || key == 'C') {
+    background(0);
   } else if (key == CODED) {
     if (keyCode == RIGHT) {
       jingle.cue(jingle.position() + 10000);
