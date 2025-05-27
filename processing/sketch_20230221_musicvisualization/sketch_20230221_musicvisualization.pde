@@ -17,9 +17,9 @@ int cols = 16;
 int rows = 32;
 int fftSize = 1024;
 float multiplier = 1;
-String songname = "../../data/theme23.mp3";
+String songname = "../../data/theme54.mp3";
 float skip = -1;
-float maxwidth = 1024;
+float maxwidth = 4096;
 float[][] terrain;
 float maxheight;
 float cMod = 0.0;
@@ -73,19 +73,21 @@ void setup () {
   supervisor = new PostFXSupervisor(this);
   fillPasses = new Pass[] {
     new BrightPass(this, 0.8f),
-    new PixelatePass(this, 400f),
+    // new BloomPass(this, 0.1, 1200, 20),
+    new SobelPass(this),
+    new PixelatePass(this, 600f),
+    // new SobelPass(this),
     // new SobelPass(this),
     // new PixelatePass(this, 400f),
     
     // new SobelPass(this),
-    // new PixelatePass(this, 200f),
+    // new PixelatePass(this, 600f),
 
     // new ChromaticAberrationPass(this),
     // new PixelatePass(this, 800f),
     // new BrightPass(this, 0.1f),
     new ChromaticAberrationPass(this),
-    new BloomPass(this, 0.2, 120, 20),
-    // new BloomPass(this, 0.1, 300, 300),
+    // new BloomPass(this, 0.2, 120, 10),
     new VignettePass(this, 0.8, 0.3),
     
   };
@@ -101,7 +103,7 @@ void setup () {
   // };
 
   // size(1280, 720, P3D);
-  fullScreen(P3D, 2);
+  fullScreen(P3D);
   strokeJoin(ROUND);
   strokeCap(ROUND);
   colorMode(HSB, 360);
@@ -144,7 +146,7 @@ void draw () {
   noStroke();
   setTitle();
 
-  background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
+  // background(backgroundHue, backgroundSaturation, backgroundBrightness, .01);
   fft.forward(jingle.mix);
 
   float maxfromband = 0;
@@ -205,10 +207,10 @@ void draw () {
     }
   }
   
-  strip(c+cMod, 360-cMod, 1, 1, 1, xPow, yPow, heightpercentage);
-  strip(c+cMod, 360-cMod, -1, 1, 1, xPow, yPow, heightpercentage);
-  strip(c+cMod, 360-cMod, 1, 1, -1, xPow, yPow, heightpercentage);
-  strip(c+cMod, 360-cMod, -1, 1, -1, xPow, yPow, heightpercentage);
+  strip(c+cMod, 360-cMod, 1, 1, 1.5, xPow, yPow, heightpercentage);
+  strip(c+cMod, 360-cMod, -1, 1, 1.5, xPow, yPow, heightpercentage);
+  strip(c+cMod, 360-cMod, 1, 1, -1.5, xPow, yPow, heightpercentage);
+  strip(c+cMod, 360-cMod, -1, 1, -1.5, xPow, yPow, heightpercentage);
 
   if (heightpercentage > backgroundChangePercentage) {
     backgroundHue = c+cMod;
