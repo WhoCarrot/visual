@@ -13,7 +13,7 @@ PeasyCam    cam;
 boolean fill = true;
 
 int scl;
-int cols = 16;
+int cols = 3;
 int rows = 32;
 int fftSize = 1024;
 float multiplier = 1;
@@ -26,7 +26,7 @@ float cMod = 0.0;
 float desiredcMod = 0.0;
 
 float fillFramerate = 30;
-float noFillFramerate = 30;
+float noFillFramerate = fillFramerate;
 
 float backgroundHue = 0.0;
 float backgroundBrightness = 0.0;
@@ -41,7 +41,7 @@ float lowHeightTicker = 0;
 float lowHeightTime = 30;
 float lowHeightThreshold = 10;
 
-float alphaDecay = .5;
+float alphaDecay = .33;
 float alphaMin = -270;
 float alphaMax = 360;
 float alphaCurrent = alphaMin;
@@ -72,19 +72,14 @@ void setup () {
   // fx = new PostFX(this);
   supervisor = new PostFXSupervisor(this);
   fillPasses = new Pass[] {
-    new BrightPass(this, 0.8f),
-    // new BloomPass(this, 0.1, 1200, 20),
-    new SobelPass(this),
-    new PixelatePass(this, 600f),
-    // new SobelPass(this),
-    // new SobelPass(this),
-    // new PixelatePass(this, 400f),
-    
-    // new SobelPass(this),
-    // new PixelatePass(this, 600f),
+    fillPasses = new Pass[] {
+
+      
+    new BrightPass(this, 0.56f),
 
     // new ChromaticAberrationPass(this),
-    // new PixelatePass(this, 800f),
+    // new SobelPass(this),
+    // new PixelatePass(this, 400f),
     // new BrightPass(this, 0.1f),
     new ChromaticAberrationPass(this),
     // new BloomPass(this, 0.2, 120, 10),
@@ -111,11 +106,13 @@ void setup () {
   frameRate(fillFramerate);
   noStroke();
 
+  // maxwidth = width / 10;
+
   scl = width / cols;
   
   terrain = new float[cols][rows];
 
-  // jingle.cue(40000);
+  // jingle.cue(116234);
 }
 
 void setFill(boolean fillValue) {
@@ -221,12 +218,12 @@ void draw () {
     backgroundBrightness -= map(backgroundBrightness, 0, 360, backgroundIntensityDecay, backgroundIntensityDecay*2);
   }
 
-  if (fill) {
-    zEnable += zEnableSpeed;
-  } else {
-    zEnable -= zEnableSpeed;
-  }
-  zEnable = min(max(zEnable, zEnableMin), zEnableMax);
+  // if (fill) {
+  //   zEnable += zEnableSpeed;
+  // } else {
+  //   zEnable -= zEnableSpeed;
+  // }
+  // zEnable = min(max(zEnable, zEnableMin), zEnableMax);
 
   supervisor.render();
 
@@ -238,7 +235,7 @@ void draw () {
   // saveFrame("exports/image" + frameCount + ".jpg");
 }
 
-void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, float xPow, float yPow, float heightpercentage) {
+void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, float xPow, float yPow, float heightpercentage, float alphaMod) {
   for (int y = 0; y < rows-1; y++) {
     beginShape(TRIANGLE_STRIP);
     for (int x = 0; x < cols; x++) {
@@ -257,8 +254,9 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
         }
         alphaCurrent = max(min(alphaCurrent, alphaMax, 360), alphaMin, 0);
 
-        fill(color(c, 360, 360, alphaCurrent));
-        stroke(color(c, 360, 360, alphaCurrent));
+        fill(color(c, 360, 360, alphaCurrent * alphaMod));
+        // noFill();
+        stroke(color(c, 360, 360, alphaCurrent * alphaMod));
       } else {
         // fill(c, 360, map(heightpercentage, 0, 100, 0, 360));
         stroke(c, 360, 360);
@@ -270,8 +268,11 @@ void strip(float colorMin, float colorMax, float xMod, float yMod, float zMod, f
       float xSine = tan(map(y, 0, rows-1, 0, HALF_PI));
 
       
-      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable);
-      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable);
+      vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable-height/2-600);
+      vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]+zMod*pow(y,yPow)*pow(x,xPow)*zEnable-height/2-600);
+
+      // vertex(x*scl*xMod*xSine, y*yMod-x*ySine*scl+scl, zMod*terrain[x][y]-zEnable*pow(x,xPow)*pow(y,yPow)-300);
+      // vertex(x*scl*xMod*xSine, (y+1)*yMod-x*ySine*scl+scl, zMod*terrain[x][y+1]-zEnable*pow(x,xPow)*pow(y,yPow)-300);
 
       // if (fill) {
       // } else {
@@ -331,6 +332,11 @@ void setMaximumHeight(String name) {
 void keyPressed() {
   if (key == 'f' || key == 'F') {
     setFill(!fill);
+  } else if (key == ' ') {
+    if (jingle.isPlaying()) jingle.pause();
+    else jingle.play();
+  } else if (key == 'c' || key == 'C') {
+    background(0);
   } else if (key == CODED) {
     if (keyCode == RIGHT) {
       jingle.cue(jingle.position() + 10000);
@@ -338,4 +344,10 @@ void keyPressed() {
       jingle.cue(jingle.position() - 10000);
     }
   }
+}
+
+void mouseWheel(MouseEvent event) {
+  float scrollAmount = event.getCount();
+  zEnable += scrollAmount / 10;
+  println(zEnable);
 }
